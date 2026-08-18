@@ -1,0 +1,83 @@
+{
+  "rules": [
+    {
+      "id": "number.mold-frame.part.001",
+      "domain": "number",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "eq",
+          "value": "模架"
+        }
+      },
+      "then": {
+        "numberRange": {
+          "min": 1,
+          "max": 99
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 part_number_ranges 迁移：模架 1-99",
+        "tests": []
+      }
+    },
+    {
+      "id": "number.machined.part.001",
+      "domain": "number",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "in",
+          "value": [
+            "自制件",
+            "镶配件"
+          ]
+        }
+      },
+      "then": {
+        "numberRange": {
+          "min": 100,
+          "max": 199
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 part_number_ranges 迁移：自制/镶配 100-199",
+        "tests": []
+      }
+    },
+    {
+      "id": "number.other.global.001",
+      "domain": "number",
+      "priority": 100,
+      "scope": "global",
+      "when": {},
+      "then": {
+        "numberRange": {
+          "min": 200,
+          "max": 999
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 part_number_ranges 迁移：其余 200+ 兜底",
+        "tests": []
+      }
+    }
+  ]
+}

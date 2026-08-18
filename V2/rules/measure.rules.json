@@ -1,0 +1,32 @@
+{
+  "rules": [
+    {
+      "id": "measure.skip-gr.part.001",
+      "domain": "measure",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "in",
+          "value": [
+            "紧固件",
+            "热流道"
+          ]
+        }
+      },
+      "then": {
+        "skipMeasurement": true,
+        "skipReason": "外购/标准件无实体测量意义"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 spec_skip_gr 迁移：紧固件/热流道不测规格",
+        "tests": []
+      }
+    }
+  ]
+}

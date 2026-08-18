@@ -1,0 +1,410 @@
+{
+  "rules": [
+    {
+      "id": "normalize.syn.part.001",
+      "domain": "normalize",
+      "priority": 507,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "信号开关安装板"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "信号开关安装板",
+            "限位开关安装板"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 信号开关安装板→限位开关安装板（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.002",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模I框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模I框",
+            "定1模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模I框→定1模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.003",
+      "domain": "normalize",
+      "priority": 505,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模II框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模II框",
+            "定2模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模II框→定2模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.004",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模I框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模I框",
+            "动1模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模I框→动1模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.005",
+      "domain": "normalize",
+      "priority": 505,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模II框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模II框",
+            "动2模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模II框→动2模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.006",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "信号开关"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "信号开关",
+            "限位开关"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 信号开关→限位开关（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.007",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "反推杆"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "反推杆",
+            "复位杆"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 反推杆→复位杆（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.008",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "吊模块"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "吊模块",
+            "吊装块"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 吊模块→吊装块（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.009",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "集油块"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "集油块",
+            "油路导流板"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 集油块→油路导流板（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.010",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模I"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模I",
+            "定1"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模I→定1（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.011",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模II"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模II",
+            "定2"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模II→定2（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.012",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模I"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模I",
+            "动1"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模I→动1（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.013",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模II"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模II",
+            "动2"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模II→动2（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.014",
+      "domain": "normalize",
+      "priority": 502,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "螺丝"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "螺丝",
+            "螺钉"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 螺丝→螺钉（长词优先）",
+        "tests": []
+      }
+    }
+  ]
+}

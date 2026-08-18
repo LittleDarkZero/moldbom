@@ -1,0 +1,3 @@
+# 开发 / 打包依赖
+-r requirements.txt
+pyinstaller>=6.0    # 打包 BomExport.exe（onefile / windowed）

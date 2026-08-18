@@ -1,0 +1,5 @@
+# MoldBOM 运行时依赖（Python 3.12+，Windows）
+pywin32>=306        # CATIA COM 自动化（win32com / pythoncom）
+openpyxl>=3.1       # Excel (.xlsx) 读写
+numpy>=1.26         # 规格测量几何计算（PCA / 特征值）
+scipy>=1.11         # 最小包围盒 / 数值优化

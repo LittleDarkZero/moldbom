@@ -1,0 +1,7 @@
+{
+  "repo": "https://github.com/OWNER/REPO",
+  "token": "",
+  "auto_check": true,
+  "check_interval_hours": 24,
+  "last_check": ""
+}

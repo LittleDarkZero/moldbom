@@ -1,0 +1,971 @@
+{
+  "_格式": "零件信息表 v1",
+  "parts": [
+    {
+      "partName": "调整板",
+      "specs": [
+        {
+          "spec": "39.5*59.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "40*60",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "59.5*79.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "60*80",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "79.5*99.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "80*100",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "99.5*119.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "100*120",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "89.5*89.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "90*90",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "99.5*99.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "100*100",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "119.5*119.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "120*120",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "⌀31.5*12",
+          "gr": "仓库备件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "",
+          "model": "⌀32",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-16",
+              "qty": 1,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "侧面非标调整板",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "镶配件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "厚度配做\n橙色面攻拉拔螺钉孔",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "锁紧面非标调整板",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "Cr12 \nHRC50~52",
+          "remark": "青色面加油槽\n橙色面攻拉拔螺钉孔",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-16",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "镶块",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "自制件",
+          "material": "SW2343-L\n HRC46~48",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        }
+      ]
+    },
+    {
+      "partName": "隔水片",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "隔水片",
+          "material": "黄铜",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        }
+      ]
+    },
+    {
+      "partName": "止水销",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "标准件",
+          "material": "",
+          "remark": "按misumi的MSTM销钉规格加工，但不加工排气槽",
+          "model": "",
+          "fasteners": []
+        }
+      ]
+    },
+    {
+      "partName": "热交换管",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "标准件",
+          "material": "",
+          "remark": "MISUMI",
+          "model": "",
+          "fasteners": []
+        }
+      ]
+    },
+    {
+      "partName": "方导柱",
+      "specs": [
+        {
+          "spec": "310*90*49",
+          "gr": "小零件",
+          "material": "Cr12\n HRC52~55",
+          "remark": "侧面加工油槽",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB12-50",
+              "qty": 3,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW12",
+              "qty": 3,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "Cr12\n HRC52~55",
+          "remark": "侧面加工油槽",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB16-60",
+              "qty": 2,
+              "gr": "标准件"
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW16",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "精定位",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "仓库备件",
+          "material": "",
+          "remark": "",
+          "model": "Z085/75*38",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-45",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "挡料环",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-25",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW8",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "定位圈",
+      "specs": [
+        {
+          "spec": "⌀249.8*40",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB12-50",
+              "qty": 4,
+              "gr": ""
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW12",
+              "qty": 4,
+              "gr": ""
+            }
+          ]
+        },
+        {
+          "spec": "⌀119.8*40",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB12-50",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW12",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB12-50",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW12",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "锁模块",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB20-50",
+              "qty": 2,
+              "gr": "标准件"
+            }
+          ]
+        },
+        {
+          "spec": "30*60*120",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB20-50",
+              "qty": 2,
+              "gr": "标准件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "导流板",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "⌀11.5mm孔攻PT1/4\n按数据刻字",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-50",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "限位柱",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "等高±0.02mm",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-40",
+              "qty": 1,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "推板导套压板",
+      "specs": [
+        {
+          "spec": "13*15*5",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-16",
+              "qty": 1,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "9*13*23",
+          "gr": "标准件",
+          "material": "45#",
+          "remark": "燕秀标准",
+          "model": "Y83A/13*23*9",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB5-12",
+              "qty": 1,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "⌀30*11",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-16",
+              "qty": 1,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "油路导流板",
+      "specs": [
+        {
+          "spec": "60*60*90",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB8-50",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "压线板",
+      "specs": [
+        {
+          "spec": "2*50*225",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "压线板a",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "19*49.8*100",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "压线板b",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "1.9*20*74",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "压线板c",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "1.9*20*94",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "压线板d",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "(兜底·全部规格)",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "非标压线板",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "配线板",
+      "specs": [
+        {
+          "spec": "50*55*251",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "8芯配线板",
+          "fasteners": [
+            {
+              "name": "螺钉柱",
+              "spec": "螺钉柱b-L50",
+              "qty": 2,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "螺钉",
+              "spec": "CB8-70",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "55*70*280",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "16芯配线板",
+          "fasteners": [
+            {
+              "name": "螺钉柱",
+              "spec": "螺钉柱b-L50",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "螺钉",
+              "spec": "CB8-70",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "55*150*180",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "24芯配线板",
+          "fasteners": [
+            {
+              "name": "螺钉柱",
+              "spec": "螺钉柱b-L50",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "螺钉",
+              "spec": "CB8-70",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "(兜底·全部规格)",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉柱",
+              "spec": "螺钉柱b-L50",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "螺钉",
+              "spec": "CB8-70",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉柱",
+              "spec": "螺钉柱b-L50",
+              "qty": 4,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "螺钉",
+              "spec": "CB8-70",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "限位开关安装板",
+      "specs": [
+        {
+          "spec": "10*60*60",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "限位开关",
+      "specs": [
+        {
+          "spec": "34*41.5*52.4",
+          "gr": "仓库备件",
+          "material": "",
+          "remark": "",
+          "model": "Z-15GD-B",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB4-30",
+              "qty": 4,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "限位挡块",
+      "specs": [
+        {
+          "spec": "10*45*75",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "a-L型",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "15*30*100",
+          "gr": "仓库备件",
+          "material": "45#",
+          "remark": "",
+          "model": "b-I型",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "",
+          "gr": "小零件",
+          "material": "45#",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "CB6-12",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "partName": "隔热板",
+      "specs": [
+        {
+          "spec": "",
+          "gr": "标准件",
+          "material": "高强度型\nHIPXS",
+          "remark": "去毛刺",
+          "model": "",
+          "fasteners": []
+        }
+      ]
+    },
+    {
+      "partName": "油缸",
+      "specs": [
+        {
+          "spec": "BOD-AG-40",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": [
+            {
+              "name": "螺钉",
+              "spec": "M10*85",
+              "qty": 2,
+              "gr": "仓库备件"
+            },
+            {
+              "name": "弹簧垫圈",
+              "spec": "CBW10",
+              "qty": 2,
+              "gr": "仓库备件"
+            }
+          ]
+        },
+        {
+          "spec": "BOD-AG-50-25-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-50-50-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-50-100-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-30-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-50-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-63-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-80-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-100-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-120-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-140-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        },
+        {
+          "spec": "BOD-AG-63-150-V",
+          "gr": "油缸",
+          "material": "",
+          "remark": "",
+          "model": "",
+          "fasteners": []
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-08-13"
+}

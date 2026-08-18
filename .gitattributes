@@ -1,0 +1,13 @@
+# 统一行尾，避免多人协作时 CRLF/LF 混乱
+* text=auto
+
+# Windows 批处理必须 CRLF
+*.bat text eol=crlf
+
+# 二进制文件不做转换
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
+*.exe binary
+*.CATPart binary

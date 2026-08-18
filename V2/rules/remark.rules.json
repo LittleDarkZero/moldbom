@@ -1,0 +1,504 @@
+{
+  "rules": [
+    {
+      "id": "remark.wizard.part.002",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "侧面非标调整板"
+        }
+      },
+      "then": {
+        "remark": "厚度配做\n橙色面攻拉拔螺钉孔"
+      },
+      "meta": {
+        "status": "active",
+        "version": 18,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.003",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁紧面非标调整板"
+        }
+      },
+      "then": {
+        "remark": "青色面加油槽\n橙色面攻拉拔螺钉孔"
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.004",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "止水销"
+        }
+      },
+      "then": {
+        "remark": "按misumi的MSTM销钉规格加工，但不加工排气槽"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.001",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "310*90*49"
+        }
+      },
+      "then": {
+        "remark": "侧面加工油槽"
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.005",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        }
+      },
+      "then": {
+        "remark": "侧面加工油槽"
+      },
+      "meta": {
+        "status": "active",
+        "version": 15,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.006",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "挡料环"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 15,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.007",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 20,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.008",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.009",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "导流板"
+        }
+      },
+      "then": {
+        "remark": "⌀11.5mm孔攻PT1/4\n按数据刻字"
+      },
+      "meta": {
+        "status": "active",
+        "version": 17,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.010",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位柱"
+        }
+      },
+      "then": {
+        "remark": "等高±0.02mm"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.002",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "13*15*5"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.003",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "9*13*23"
+        }
+      },
+      "then": {
+        "remark": "燕秀标准"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.004",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 10,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.011",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "非标压线板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.005",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 10,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.012",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.013",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.015",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "隔热板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.016",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "热交换管"
+        }
+      },
+      "then": {
+        "remark": "MISUMI"
+      },
+      "meta": {
+        "status": "active",
+        "version": 8,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.017",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "rules": [
+    {
+      "id": "purchase.thermal-runner.part.001",
+      "domain": "purchase",
+      "priority": 600,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "eq",
+          "value": "热流道"
+        }
+      },
+      "then": {
+        "purchaseFixedQty": 1
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 purchase_fixed_qty 迁移：热流道系统=1 件外购，跳过 STP 导出",
+        "tests": []
+      }
+    }
+  ]
+}

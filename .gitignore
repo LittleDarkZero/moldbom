@@ -1,0 +1,39 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# ===== PyInstaller 构建产物 =====
+bom_export/dist/
+bom_export/build/
+bom_export/build_new/
+
+# ===== 运行时产物 =====
+*.log
+bom_export/updates/
+*.exe.old
+*.exe.new
+*.part
+
+# 自动更新配置（可能含 GitHub token —— 绝不入库）
+bom_export/update_config.json
+
+# 规则热更新落盘目录（运行时生成，勿与源码 V2/ 混淆）
+bom_export/V2/
+
+# ===== 专有数据（商业数据，不入库）=====
+# 真实 CATIA 测试集与规格测量基准（50 例点云）
+bom_export/TEST/
+# 历史 BOM（V2 规则录入参考）
+bom_export/参考bom表/
+# 旧格式规则备份（回滚请用 V2/rules/snapshots/ 机制）
+V2/rules_backup_*/
+
+# ===== 编辑器 / 系统 =====
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store

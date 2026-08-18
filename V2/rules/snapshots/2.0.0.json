@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "manifest": {
+    "name": "default",
+    "version": "2.0.0",
+    "author": "littledark",
+    "createdAt": "2026-08-04",
+    "updatedAt": "2026-08-04",
+    "domains": [
+      "filter",
+      "normalize",
+      "gr",
+      "material",
+      "remark",
+      "companion",
+      "number",
+      "measure",
+      "purchase"
+    ],
+    "note": "2026-08-04 用户要求从零录入，规则已清空（备份: rules_backup_20260804）"
+  },
+  "rules": []
+}

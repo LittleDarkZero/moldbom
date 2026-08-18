@@ -1,0 +1,6673 @@
+{
+  "version": "2.0.26",
+  "manifest": {
+    "name": "default",
+    "version": "2.0.25",
+    "author": "littledark",
+    "createdAt": "2026-08-04",
+    "updatedAt": "2026-08-04",
+    "domains": [
+      "filter",
+      "normalize",
+      "gr",
+      "material",
+      "remark",
+      "companion",
+      "number",
+      "measure",
+      "purchase"
+    ],
+    "note": "2026-08-04 用户要求从零录入，规则已清空（备份: rules_backup_20260804）"
+  },
+  "rules": [
+    {
+      "id": "filter.skip-auxiliary.part.001",
+      "domain": "filter",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "regex",
+          "value": "毛坯|工艺柱|减槽|活塞|STAUBLI"
+        }
+      },
+      "then": {
+        "input.skipBody": true,
+        "input.skipReason": "工艺辅具关键词"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 skip_keywords 迁移：含这些关键词的 Body 不计入 BOM",
+        "tests": []
+      }
+    },
+    {
+      "id": "filter.oil-auxiliary.part.001",
+      "domain": "filter",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "regex",
+          "value": "油缸接头|油缸活塞"
+        }
+      },
+      "then": {
+        "input.skipBody": true,
+        "input.skipReason": "油缸附属件（与油缸主体合并）"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 oil_cylinder_parts 迁移：油缸附属件不入 BOM",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.001",
+      "domain": "normalize",
+      "priority": 507,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "信号开关安装板"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "信号开关安装板",
+            "限位开关安装板"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 信号开关安装板→限位开关安装板（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.002",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模I框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模I框",
+            "定1模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模I框→定1模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.003",
+      "domain": "normalize",
+      "priority": 505,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模II框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模II框",
+            "定2模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模II框→定2模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.004",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模I框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模I框",
+            "动1模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模I框→动1模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.005",
+      "domain": "normalize",
+      "priority": 505,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模II框"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模II框",
+            "动2模框"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模II框→动2模框（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.006",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "信号开关"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "信号开关",
+            "限位开关"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 信号开关→限位开关（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.007",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "反推杆"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "反推杆",
+            "复位杆"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 反推杆→复位杆（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.008",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "吊模块"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "吊模块",
+            "吊装块"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 吊模块→吊装块（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.009",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "集油块"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "集油块",
+            "油路导流板"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 集油块→油路导流板（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.010",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模I"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模I",
+            "定1"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模I→定1（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.011",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定模II"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "定模II",
+            "定2"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 定模II→定2（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.012",
+      "domain": "normalize",
+      "priority": 503,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模I"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模I",
+            "动1"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模I→动1（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.013",
+      "domain": "normalize",
+      "priority": 504,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "动模II"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "动模II",
+            "动2"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 动模II→动2（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "normalize.syn.part.014",
+      "domain": "normalize",
+      "priority": 502,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "螺丝"
+        }
+      },
+      "then": {
+        "part.workingName": {
+          "replaceAll": [
+            "螺丝",
+            "螺钉"
+          ]
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 synonyms 迁移: 螺丝→螺钉（长词优先）",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.003",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "80*100*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.004",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*120*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.005",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "90*90*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.006",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*100*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.007",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "120*120*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.002",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "侧面非标调整板"
+        }
+      },
+      "then": {
+        "gr": "镶配件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 15,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.009",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀32*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.003",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁紧面非标调整板"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.004",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "镶块"
+        }
+      },
+      "then": {
+        "gr": "自制件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.007",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "隔水片"
+        }
+      },
+      "then": {
+        "gr": "隔水片"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.008",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "止水销"
+        }
+      },
+      "then": {
+        "gr": "标准件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.009",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "热交换管"
+        }
+      },
+      "then": {
+        "gr": "标准件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.010",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "310*90*49"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.010",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.011",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "精定位"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.012",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "挡料环"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.011",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀249.8*40"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.012",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀119.8*40"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.013",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.014",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.015",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "导流板"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.default.part.001",
+      "domain": "gr",
+      "priority": 100,
+      "scope": "global",
+      "when": {},
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "小M",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-05",
+        "rationale": "未录入零件兜底（用户 2026-08-05 确认：小零件、无配套）",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.014",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "30*60*120"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.016",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位柱"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.015",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "13*15*5"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.016",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "9*13*23"
+        }
+      },
+      "then": {
+        "gr": "标准件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.017",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀30*11"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.018",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油路导流板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "60*60*90"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.019",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "2*50*225"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.020",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "19*49.8*100"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.021",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*74"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.022",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*94"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.023",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.017",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "非标压线板"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 8,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.024",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "50*55*251"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.025",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*70*280"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.026",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*150*180"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.027",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.028",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*60*60"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.018",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.029",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "34*41.5*52.4"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.030",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*45*75"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.031",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "15*30*100"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.019",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.021",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "隔热板"
+        }
+      },
+      "then": {
+        "gr": "标准件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.part.022",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        }
+      },
+      "then": {
+        "gr": "小零件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.032",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-40"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.033",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-50-25-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.034",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-50-50-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.035",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-50-100-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.036",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-30-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.037",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-50-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.038",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-63-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.039",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-80-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.040",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-100-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.041",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-120-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.042",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-140-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.043",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-63-150-V"
+        }
+      },
+      "then": {
+        "gr": "油缸"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.003",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "80*100*12"
+        }
+      },
+      "then": {
+        "outputSpec": "80*100"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.004",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*120*12"
+        }
+      },
+      "then": {
+        "outputSpec": "100*120"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.005",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "90*90*12"
+        }
+      },
+      "then": {
+        "outputSpec": "90*90"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.006",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*100*12"
+        }
+      },
+      "then": {
+        "outputSpec": "100*100"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.007",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "120*120*12"
+        }
+      },
+      "then": {
+        "outputSpec": "120*120"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.008",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀32*12"
+        }
+      },
+      "then": {
+        "outputSpec": "⌀32"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.part.001",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "精定位"
+        }
+      },
+      "then": {
+        "outputSpec": "Z085/75*38"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.009",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "9*13*23"
+        }
+      },
+      "then": {
+        "outputSpec": "Y83A/13*23*9"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.010",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "2*50*225"
+        }
+      },
+      "then": {
+        "outputSpec": "压线板a"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.011",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "19*49.8*100"
+        }
+      },
+      "then": {
+        "outputSpec": "压线板b"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.012",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*74"
+        }
+      },
+      "then": {
+        "outputSpec": "压线板c"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.013",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*94"
+        }
+      },
+      "then": {
+        "outputSpec": "压线板d"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.014",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "50*55*251"
+        }
+      },
+      "then": {
+        "outputSpec": "8芯配线板"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.015",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*70*280"
+        }
+      },
+      "then": {
+        "outputSpec": "16芯配线板"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.016",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*150*180"
+        }
+      },
+      "then": {
+        "outputSpec": "24芯配线板"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.017",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "34*41.5*52.4"
+        }
+      },
+      "then": {
+        "outputSpec": "Z-15GD-B"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.018",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*45*75"
+        }
+      },
+      "then": {
+        "outputSpec": "a-L型"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.019",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "15*30*100"
+        }
+      },
+      "then": {
+        "outputSpec": "b-I型"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.003",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "80*100*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.004",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*120*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.005",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "90*90*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.006",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*100*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.007",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "120*120*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.002",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "侧面非标调整板"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 15,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.009",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀32*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.003",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁紧面非标调整板"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.004",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "镶块"
+        }
+      },
+      "then": {
+        "material": "SW2343-L\n HRC46~48"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.007",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "隔水片"
+        }
+      },
+      "then": {
+        "material": "黄铜"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.010",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "310*90*49"
+        }
+      },
+      "then": {
+        "material": "Cr12\n HRC52~55"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.008",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        }
+      },
+      "then": {
+        "material": "Cr12\n HRC52~55"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.011",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀249.8*40"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.012",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀119.8*40"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.009",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.010",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.011",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "导流板"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.014",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "30*60*120"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.012",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位柱"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.015",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "13*15*5"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.016",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "9*13*23"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.017",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀30*11"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.018",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油路导流板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "60*60*90"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.019",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "2*50*225"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.020",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "19*49.8*100"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.021",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*74"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.022",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*94"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.023",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.013",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "非标压线板"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 8,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.024",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "50*55*251"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.025",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*70*280"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.026",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*150*180"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.027",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.028",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*60*60"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.014",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.029",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*45*75"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.030",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "15*30*100"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.015",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.016",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "隔热板"
+        }
+      },
+      "then": {
+        "material": "高强度型\nHIPXS"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.part.017",
+      "domain": "material",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        }
+      },
+      "then": {
+        "material": "45#"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.002",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "侧面非标调整板"
+        }
+      },
+      "then": {
+        "remark": "厚度配做\n橙色面攻拉拔螺钉孔"
+      },
+      "meta": {
+        "status": "active",
+        "version": 14,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.003",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁紧面非标调整板"
+        }
+      },
+      "then": {
+        "remark": "青色面加油槽\n橙色面攻拉拔螺钉孔"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.004",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "止水销"
+        }
+      },
+      "then": {
+        "remark": "按misumi的MSTM销钉规格加工，但不加工排气槽"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.001",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "310*90*49"
+        }
+      },
+      "then": {
+        "remark": "侧面加工油槽"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.005",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        }
+      },
+      "then": {
+        "remark": "侧面加工油槽"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.006",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "挡料环"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.007",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.008",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.009",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "导流板"
+        }
+      },
+      "then": {
+        "remark": "⌀11.5mm孔攻PT1/4\n按数据刻字"
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.010",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位柱"
+        }
+      },
+      "then": {
+        "remark": "等高±0.02mm"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.002",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "13*15*5"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.003",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "9*13*23"
+        }
+      },
+      "then": {
+        "remark": "燕秀标准"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.004",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.011",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "非标压线板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 8,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.spec.005",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.012",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.013",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.015",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "隔热板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.016",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "热交换管"
+        }
+      },
+      "then": {
+        "remark": "MISUMI"
+      },
+      "meta": {
+        "status": "active",
+        "version": 4,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "remark.wizard.part.017",
+      "domain": "remark",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        }
+      },
+      "then": {
+        "remark": "去毛刺"
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.003",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "80*100*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.004",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*120*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.005",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "90*90*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.006",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "100*100*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.007",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "120*120*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.002",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "侧面非标调整板"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 15,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.009",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀32*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-16",
+            "qty": 1,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.003",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁紧面非标调整板"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.010",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "310*90*49"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB12-50",
+            "qty": 3,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW12",
+            "qty": 3,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.004",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "方导柱"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB16-60",
+            "qty": 2,
+            "gr": "标准件"
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW16",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.005",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "精定位"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-45",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.006",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "挡料环"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-25",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW8",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.011",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀249.8*40"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB12-50",
+            "qty": 4,
+            "gr": ""
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW12",
+            "qty": 4,
+            "gr": ""
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.012",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀119.8*40"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB12-50",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW12",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 11,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.007",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "定位圈"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB12-50",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW12",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 16,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.008",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB20-50",
+            "qty": 2,
+            "gr": "标准件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 12,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.009",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "导流板"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-50",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 13,
+        "author": "",
+        "createdAt": "2026-08-04",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.014",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "锁模块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "30*60*120"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB20-50",
+            "qty": 2,
+            "gr": "标准件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.010",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位柱"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-40",
+            "qty": 1,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.015",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "13*15*5"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-16",
+            "qty": 1,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.016",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "9*13*23"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB5-12",
+            "qty": 1,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.017",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "推板导套压板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀30*11"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-16",
+            "qty": 1,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.018",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油路导流板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "60*60*90"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-50",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.019",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "2*50*225"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.020",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "19*49.8*100"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.021",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*74"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.022",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "1.9*20*94"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.023",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "压线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.011",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "非标压线板"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 8,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.024",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "50*55*251"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉柱",
+            "spec": "螺钉柱b-L50",
+            "qty": 2,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "螺钉",
+            "spec": "CB8-70",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.025",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*70*280"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉柱",
+            "spec": "螺钉柱b-L50",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "螺钉",
+            "spec": "CB8-70",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.026",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "55*150*180"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉柱",
+            "spec": "螺钉柱b-L50",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "螺钉",
+            "spec": "CB8-70",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.027",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "(兜底·全部规格)"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉柱",
+            "spec": "螺钉柱b-L50",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "螺钉",
+            "spec": "CB8-70",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 6,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.028",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*60*60"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.012",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关安装板"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.029",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位开关"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "34*41.5*52.4"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB4-30",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.030",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "10*45*75"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.031",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "15*30*100"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.013",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "限位挡块"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-12",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 7,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.part.014",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "配线板"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉柱",
+            "spec": "螺钉柱b-L50",
+            "qty": 4,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "螺钉",
+            "spec": "CB8-70",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.032",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "油缸"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "BOD-AG-40"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "M10*85",
+            "qty": 2,
+            "gr": "仓库备件"
+          },
+          {
+            "name": "弹簧垫圈",
+            "spec": "CBW10",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 3,
+        "author": "",
+        "createdAt": "2026-08-05",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.mold-frame-policy.part.001",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "eq",
+          "value": "模架"
+        }
+      },
+      "then": {
+        "companionGrPolicy": "follow-part"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 companion_gr_follow 迁移：模架配套件 GR 跟随父件",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.thermal-runner-suppress.part.001",
+      "domain": "companion",
+      "priority": 800,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "eq",
+          "value": "热流道"
+        }
+      },
+      "then": {
+        "suppressCompanions": true
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "热流道为外购系统件，不补螺钉（与 purchase 域一致性约束配套）",
+        "tests": []
+      }
+    },
+    {
+      "id": "number.mold-frame.part.001",
+      "domain": "number",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "eq",
+          "value": "模架"
+        }
+      },
+      "then": {
+        "numberRange": {
+          "min": 1,
+          "max": 99
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 part_number_ranges 迁移：模架 1-99",
+        "tests": []
+      }
+    },
+    {
+      "id": "number.machined.part.001",
+      "domain": "number",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "in",
+          "value": [
+            "自制件",
+            "镶配件"
+          ]
+        }
+      },
+      "then": {
+        "numberRange": {
+          "min": 100,
+          "max": 199
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 part_number_ranges 迁移：自制/镶配 100-199",
+        "tests": []
+      }
+    },
+    {
+      "id": "number.other.global.001",
+      "domain": "number",
+      "priority": 100,
+      "scope": "global",
+      "when": {},
+      "then": {
+        "numberRange": {
+          "min": 200,
+          "max": 999
+        }
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 part_number_ranges 迁移：其余 200+ 兜底",
+        "tests": []
+      }
+    },
+    {
+      "id": "measure.skip-gr.part.001",
+      "domain": "measure",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "in",
+          "value": [
+            "紧固件",
+            "热流道"
+          ]
+        }
+      },
+      "then": {
+        "skipMeasurement": true,
+        "skipReason": "外购/标准件无实体测量意义"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 spec_skip_gr 迁移：紧固件/热流道不测规格",
+        "tests": []
+      }
+    },
+    {
+      "id": "purchase.thermal-runner.part.001",
+      "domain": "purchase",
+      "priority": 600,
+      "scope": "part",
+      "when": {
+        "gr": {
+          "op": "eq",
+          "value": "热流道"
+        }
+      },
+      "then": {
+        "purchaseFixedQty": 1
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 purchase_fixed_qty 迁移：热流道系统=1 件外购，跳过 STP 导出",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.044",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "39.5*59.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.031",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "39.5*59.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.020",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "39.5*59.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "40*60"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.033",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "39.5*59.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.045",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "59.5*79.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.032",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "59.5*79.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.021",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "59.5*79.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "60*80"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.034",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "59.5*79.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 2,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.046",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "79.5*99.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.033",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "79.5*99.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.022",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "79.5*99.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "80*100"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.035",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "79.5*99.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.047",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*119.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.034",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*119.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.023",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*119.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "100*120"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.036",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*119.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.048",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "89.5*89.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.035",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "89.5*89.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.024",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "89.5*89.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "90*90"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.037",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "89.5*89.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.049",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*99.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.036",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*99.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.025",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*99.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "100*100"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.038",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "99.5*99.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.050",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "119.5*119.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.037",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "119.5*119.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.026",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "119.5*119.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "120*120"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.039",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "119.5*119.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB8-16",
+            "qty": 4,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "gr.wizard.spec.051",
+      "domain": "gr",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀31.5*12"
+        }
+      },
+      "then": {
+        "gr": "仓库备件"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "material.wizard.spec.038",
+      "domain": "material",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀31.5*12"
+        }
+      },
+      "then": {
+        "material": "Cr12 \nHRC50~52"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "spec.wizard.spec.027",
+      "domain": "spec",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀31.5*12"
+        }
+      },
+      "then": {
+        "outputSpec": "⌀32"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    },
+    {
+      "id": "companion.wizard.spec.040",
+      "domain": "companion",
+      "priority": 500,
+      "scope": "spec",
+      "when": {
+        "part.workingName": {
+          "op": "contains",
+          "value": "调整板"
+        },
+        "spec.value": {
+          "op": "eq",
+          "value": "⌀31.5*12"
+        }
+      },
+      "then": {
+        "companions": [
+          {
+            "name": "螺钉",
+            "spec": "CB6-16",
+            "qty": 1,
+            "gr": "仓库备件"
+          }
+        ]
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "",
+        "tests": []
+      }
+    }
+  ]
+}

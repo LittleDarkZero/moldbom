@@ -1,0 +1,29 @@
+{
+  "rules": [
+    {
+      "id": "filter.skip-auxiliary.part.001",
+      "domain": "filter",
+      "priority": 500,
+      "scope": "part",
+      "when": {
+        "part.workingName": {
+          "op": "regex",
+          "value": "毛坯|工艺|减槽|活塞|STAUBLI|接头|热流道接线盒|吊环|----|111|222"
+        }
+      },
+      "then": {
+        "input.skipBody": true,
+        "input.skipReason": "工艺辅具关键词"
+      },
+      "meta": {
+        "status": "active",
+        "version": 1,
+        "author": "migration",
+        "createdAt": "2026-08-13",
+        "updatedAt": "2026-08-13",
+        "rationale": "自旧 skip_keywords 迁移：含这些关键词的 Body 不计入 BOM",
+        "tests": []
+      }
+    }
+  ]
+}
