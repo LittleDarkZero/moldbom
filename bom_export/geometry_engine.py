@@ -16,7 +16,7 @@
  算法:
    - PCA 特征值分析 → 形状分类
    - OBB: PCA 方向投影 + 微分进化(DE)全局搜索 + Nelder-Mead 精炼，与 AABB 智能比较取最小
-   - 最小体积圆柱: 33 方向候选（PCA 3 轴 + Fibonacci 球面 30）+ Welzl 最小包围圆 + NM 精炼
+   - 最小体积圆柱: 30 方向候选（PCA 3 轴 + Fibonacci 球面 27）+ 凸包精确最小包围圆（_mec_exact）+ NM 精炼
    - 截面圆形度校验（R/半宽比）防矩形误判为圆柱
 
  高层接口（bom_export 使用）:
@@ -29,11 +29,14 @@
 """
 
 import warnings
+import logging
 import numpy as np
 from scipy.spatial import ConvexHull
 
 # 仅抑制 scipy 内部的 UserWarning（DE 收敛/退化警告），不吞其他模块告警
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy.*")
+
+log = logging.getLogger("bom_export.geometry")
 
 
 # ============================================================================
@@ -63,6 +66,49 @@ def fibonacci_sphere(n):
     return directions
 
 
+def _zyx_rot(rx, ry, rz):
+    """ZYX 欧拉角旋转矩阵（_compute_obb_de 内两处内联矩阵提为公共函数）。"""
+    cx, sx = np.cos(rx), np.sin(rx)
+    cy, sy = np.cos(ry), np.sin(ry)
+    cz, sz = np.cos(rz), np.sin(rz)
+    return np.array([
+        [cy * cz, cz * sx * sy - cx * sz, cx * cz * sy + sx * sz],
+        [cy * sz, cx * cz + sx * sy * sz, -cz * sx + cx * sy * sz],
+        [-sy, cy * sx, cx * cy],
+    ])
+
+
+def _plane_basis(axis):
+    """返回垂直于 axis 的右手正交基 (u, v)。
+
+    axis 接近 Z 轴时退化（cross 结果≈0），改用 X 轴叉乘避免奇异。
+    原在 5 个截面方法中内联重复，2026-08-18 提为公共函数。
+    """
+    axis = np.asarray(axis, dtype=np.float64)
+    if abs(axis[2]) < 0.999:
+        u = np.cross(axis, [0, 0, 1])
+    else:
+        u = np.cross(axis, [1, 0, 0])
+    u = u / np.linalg.norm(u)
+    v = np.cross(axis, u)
+    return u, v
+
+
+def _cross_section_obb(pts_2d):
+    """2D 点集的 PCA 主轴包围矩形尺寸，返回 (obb_x, obb_y)。
+
+    原在 4 个截面方法中内联重复，2026-08-18 提为公共函数。
+    """
+    p2 = pts_2d - pts_2d.mean(axis=0)
+    cov = p2.T @ p2
+    w2, V2 = np.linalg.eigh(cov)
+    proj_main = p2 @ V2[:, int(np.argmax(w2))]
+    proj_orth = p2 @ V2[:, int(np.argmin(w2))]
+    obb_x = proj_main.max() - proj_main.min()
+    obb_y = proj_orth.max() - proj_orth.min()
+    return obb_x, obb_y
+
+
 # ============================================================================
 #  投影特征分类容差（2026-08-11 系统性优化，可配置微调）
 #
@@ -82,7 +128,7 @@ PROJ_CONF_OVERRIDE = 0.88     # 置信度 >= 该值 → 提前返回（跳过重
 # （合成测试 1500+ 点），圆形投影判定在稀疏折点下不可靠（支撑柱 29 点、
 # 地侧支撑柱 16 点均被 proj_3rect 误判 box；挡料环投影直径 104.4 vs 真值 110）。
 # 低于该点数的点云，投影分类置信度封顶在 PROJ_CONF_FLOOR 之下不提前返回，
-# 交给 PCA+圆形度启发式（08-03 用户确认链路）+ 33 方向最小体积圆柱取精确尺寸。
+# 交给 PCA+圆形度启发式（08-03 用户确认链路）+ 30 方向最小体积圆柱取精确尺寸。
 PROJ_SPARSE_N = 200
 
 # 2026-08-13 修复: 圆柱 gap 检测的 gap_ratio 上限。gap_ratio = 最小包围圆半径 /
@@ -94,6 +140,26 @@ CYLINDER_GAP_RATIO_MAX = 3.0
 # 主轴1 截面比全局最小体积圆柱轴截面更"扁"：稀疏圆柱(16点地侧支撑柱)≈4.0、
 # 吊环≈2.7、导柱≈1.0，薄板/细条 ≥6.7——取 5.0 分隔（比宽高比 0.15/0.25 的窄缝可靠）。
 CYLINDER_GAP_RATIO_MAX_AXIS = 5.0
+
+# ============================================================================
+#  PCA 启发式分类阈值（2026-08-18 从 classify_shape 散落裸阈值提为命名常量，
+#  与投影分类 PROJ_* 常量同风格；数值与历史完全一致，仅可读性提升）
+# ============================================================================
+SPHERE_UNIFORMITY_MIN = 0.75    # sphere_uniformity > 该值 → 球体
+CYL_AXIAL_MIN = 0.50            # 长圆柱 PCA 判定 cylinder_axial 下限
+CYL_LINEARITY_MIN = 0.20        # 长圆柱 linearity 下限
+CYL_ASPECT_RATIO = 1.5          # 高径比 > 该值 → 长圆柱；否则圆盘/圆环
+DISK_RADIAL_MIN = 0.70          # 圆盘 disk_radial 下限
+DISK_FLATNESS_MIN = 0.40        # 圆盘 flatness 下限
+LINEARITY_SLENDER = 0.50        # 细长件 linearity 下限（主轴1 判定 + 孔槽检测共用）
+RING_CONF_MIN = 0.35            # 圆拟合环形件置信度下限
+HULL_FILL_BOX_CONF = 0.40       # hull_fill < 该值 → box 降置信
+SPARSE_N = 100                  # 稀疏点云辅助判断点数门槛（区别于投影的 PROJ_SPARSE_N=200）
+SPARSE_CROSS_ASPECT = 0.85      # 稀疏件截面方形度门槛
+SPARSE_CYL_AXIAL = 0.40         # 稀疏件圆柱 axial 下限
+SPARSE_CONF = 0.80              # 稀疏圆柱近似判定置信度
+BOX_DEFAULT_CONF = 0.90         # box 默认置信度（decision 起始值）
+BOX_HULL_LOW_CONF = 0.85        # hull_fill 偏低时的 box 置信度
 
 
 # ============================================================================
@@ -382,15 +448,8 @@ class PointCloudAnalyzer:
 
         def volume_from_euler(angles):
             rx, ry, rz = angles
-            cx, sx = np.cos(rx), np.sin(rx)
-            cy, sy = np.cos(ry), np.sin(ry)
-            cz, sz = np.cos(rz), np.sin(rz)
-            # ZYX 旋转矩阵
-            R = np.array([
-                [cy * cz, cz * sx * sy - cx * sz, cx * cz * sy + sx * sz],
-                [cy * sz, cx * cz + sx * sy * sz, -cz * sx + cx * sy * sz],
-                [-sy, cy * sx, cx * cy]
-            ])
+            # ZYX 旋转矩阵（提为模块级 _zyx_rot）
+            R = _zyx_rot(rx, ry, rz)
             projected = hull_pts @ R.T
             dims = projected.max(axis=0) - projected.min(axis=0)
             return np.prod(dims)
@@ -451,19 +510,13 @@ class PointCloudAnalyzer:
                     best_angles = nm2.x
 
             rx, ry, rz = best_angles
-            cx, sx = np.cos(rx), np.sin(rx)
-            cy, sy = np.cos(ry), np.sin(ry)
-            cz, sz = np.cos(rz), np.sin(rz)
-            R_opt = np.array([
-                [cy * cz, cz * sx * sy - cx * sz, cx * cz * sy + sx * sz],
-                [cy * sz, cx * cz + sx * sy * sz, -cz * sx + cx * sy * sz],
-                [-sy, cy * sx, cx * cy]
-            ])
+            R_opt = _zyx_rot(rx, ry, rz)
 
             obb = self._build_obb(R_opt, self.center)
             obb["type"] = "DE-OBB"
             return obb
-        except Exception:
+        except Exception as e:
+            log.warning("DE OBB 优化失败（回退 PCA OBB）%s: %s", self.name, e)
             return None
 
     # ---------- 形状分类（增强版：多假设对比）----------
@@ -536,21 +589,21 @@ class PointCloudAnalyzer:
         # ---- 决策 ----
         shape_cn = "立方体/长方体"
         shape_en = "box"
-        confidence = 0.90
+        confidence = BOX_DEFAULT_CONF
         decision_reason = "default"
 
         # 圆柱体高度比（用于区分圆柱 vs 圆环）
         cyl = self.compute_cylinder()
         cyl_ar = cyl["height"] / max(cyl["diameter"], 1e-9)  # 高径比
 
-        if sphere_uniformity > 0.75:
+        if sphere_uniformity > SPHERE_UNIFORMITY_MIN:
             shape_cn, shape_en, confidence = "球体", "sphere", sphere_uniformity
             decision_reason = "sphere_PCA"
-        elif cylinder_axial > 0.50 and linearity > 0.20:
+        elif cylinder_axial > CYL_AXIAL_MIN and linearity > CYL_LINEARITY_MIN:
             # 长圆柱（PCA 确认）→ 需圆形度校验
             is_circ, _ = self._is_cross_section_circular()
             if is_circ:
-                if cyl_ar > 1.5:
+                if cyl_ar > CYL_ASPECT_RATIO:
                     shape_cn, shape_en = "圆柱体", "cylinder"
                 else:
                     shape_cn, shape_en = "圆柱体 (短)", "cylinder"
@@ -559,7 +612,7 @@ class PointCloudAnalyzer:
             else:
                 # PCA 判断为圆柱但截面不圆 → 保持 box
                 decision_reason = "cylinder_PCA_rejected_not_circular"
-        elif disk_radial > 0.70 and flatness > 0.40:
+        elif disk_radial > DISK_RADIAL_MIN and flatness > DISK_FLATNESS_MIN:
             # 圆盘（PCA 径向对称 + 扁平）→ 需圆形度校验
             # 2026-07-31 修正: 圆盘的主轴(最大方差方向)在盘面内，截面检查必须用圆柱轴
             # (最小方差方向 eigenvectors[2])，否则 160×25 型截面会被误判为非圆
@@ -570,7 +623,7 @@ class PointCloudAnalyzer:
                 decision_reason = "disk_PCA"
             else:
                 decision_reason = "disk_PCA_rejected_not_circular"
-        elif linearity > 0.50 and (pa := self._principal_axis_cylinder()):
+        elif linearity > LINEARITY_SLENDER and (pa := self._principal_axis_cylinder()):
             # 主轴1 长轴圆柱判定（2026-07-31 用户反馈修复: 带孔圆柱）——
             # 置于 circle_fit 之前：地侧支撑柱侧面螺钉孔会误导全局最小体积
             # 圆柱选孔方向为轴（盘状包络体积更小，Φ160×23 vs 正确 Φ100×130），
@@ -581,12 +634,12 @@ class PointCloudAnalyzer:
             shape_cn, shape_en = pa["shape_cn"], "cylinder"
             confidence = pa["confidence"]
             decision_reason = "cylinder_principal_axis"
-        elif is_ring and circle_result["confidence"] > 0.35:
+        elif is_ring and circle_result["confidence"] > RING_CONF_MIN:
             # PCA 未识别为圆柱，但圆拟合表明是环形件 → 需圆形度二次确认
             is_circ, _ = self._is_cross_section_circular()
             if not is_circ:
                 decision_reason = "circle_fit_rejected_not_circular"
-            elif cyl_ar > 1.5:
+            elif cyl_ar > CYL_ASPECT_RATIO:
                 shape_cn, shape_en = "圆柱体 (圆拟合)", "cylinder"
                 confidence = circle_result["confidence"]
                 decision_reason = "circle_fit_override"
@@ -594,7 +647,7 @@ class PointCloudAnalyzer:
                 shape_cn, shape_en = "圆环/法兰", "cylinder"
                 confidence = circle_result["confidence"]
                 decision_reason = "circle_fit_override"
-        elif linearity > 0.50:
+        elif linearity > LINEARITY_SLENDER:
             # 细长件：检测截面是否因特征（孔/槽）导致 OBB 失真
             # 注: 主轴1 长轴圆柱判定已在上方独立分支（cylinder_principal_axis）优先处理；
             # 此处仅处理"截面不圆"的细长件（含孔槽圆柱的 gap 检测）。
@@ -605,18 +658,18 @@ class PointCloudAnalyzer:
                 confidence = gap_result["confidence"]
                 decision_reason = "cylinder_gap_detected"
         else:
-            if hull_fill < 0.4:
-                confidence = 0.85
+            if hull_fill < HULL_FILL_BOX_CONF:
+                confidence = BOX_HULL_LOW_CONF
             decision_reason = "box_default"
 
         # 稀疏点云辅助判断（需圆形度二次确认）
-        if self.N < 100 and shape_en == "box":
+        if self.N < SPARSE_N and shape_en == "box":
             cross_aspect = min(dims_obb[1], dims_obb[2]) / max(dims_obb[1], dims_obb[2], 1e-9)
-            if cross_aspect > 0.85 and cylinder_axial > 0.40:
+            if cross_aspect > SPARSE_CROSS_ASPECT and cylinder_axial > SPARSE_CYL_AXIAL:
                 is_circ, _ = self._is_cross_section_circular()
                 if is_circ:
                     shape_cn, shape_en = "圆柱体 (近似)", "cylinder"
-                    confidence = min(confidence, 0.80)
+                    confidence = min(confidence, SPARSE_CONF)
                     decision_reason = "sparse_cylinder_heuristic"
 
         result = {
@@ -795,23 +848,11 @@ class PointCloudAnalyzer:
         proj_axial = centered @ axis
         proj_plane = centered - np.outer(proj_axial, axis)
 
-        if abs(axis[2]) < 0.999:
-            u = np.cross(axis, [0, 0, 1])
-        else:
-            u = np.cross(axis, [1, 0, 0])
-        u = u / np.linalg.norm(u)
-        v = np.cross(axis, u)
+        u, v = _plane_basis(axis)
         pts_2d = np.column_stack([proj_plane @ u, proj_plane @ v])
 
         # 截面真实最小包围矩形: 2D PCA 主轴投影（2×2 eigh，开销可忽略）
-        p2 = pts_2d - pts_2d.mean(axis=0)
-        cov = p2.T @ p2
-        w2, V2 = np.linalg.eigh(cov)
-        main = V2[:, int(np.argmax(w2))]
-        proj_main = p2 @ main
-        proj_orth = p2 @ V2[:, int(np.argmin(w2))]
-        obb_x = proj_main.max() - proj_main.min()
-        obb_y = proj_orth.max() - proj_orth.min()
+        obb_x, obb_y = _cross_section_obb(pts_2d)
         major_half = max(obb_x, obb_y) / 2
 
         if major_half < 1e-9:
@@ -841,20 +882,9 @@ class PointCloudAnalyzer:
         centered = self.points - self.center
         proj_axial = centered @ axis
         proj_plane = centered - np.outer(proj_axial, axis)
-        if abs(axis[2]) < 0.999:
-            u = np.cross(axis, [0, 0, 1])
-        else:
-            u = np.cross(axis, [1, 0, 0])
-        u = u / np.linalg.norm(u)
-        v = np.cross(axis, u)
+        u, v = _plane_basis(axis)
         pts_2d = np.column_stack([proj_plane @ u, proj_plane @ v])
-        p2 = pts_2d - pts_2d.mean(axis=0)
-        cov = p2.T @ p2
-        w2, V2 = np.linalg.eigh(cov)
-        main = V2[:, int(np.argmax(w2))]
-        orth = V2[:, int(np.argmin(w2))]
-        obb_x = (p2 @ main).max() - (p2 @ main).min()
-        obb_y = (p2 @ orth).max() - (p2 @ orth).min()
+        obb_x, obb_y = _cross_section_obb(pts_2d)
         major = max(obb_x, obb_y)
         minor = min(obb_x, obb_y)
         if minor < 1e-9:
@@ -875,20 +905,9 @@ class PointCloudAnalyzer:
         centered = self.points - self.center
         proj_axial = centered @ axis
         proj_plane = centered - np.outer(proj_axial, axis)
-        if abs(axis[2]) < 0.999:
-            u = np.cross(axis, [0, 0, 1])
-        else:
-            u = np.cross(axis, [1, 0, 0])
-        u = u / np.linalg.norm(u)
-        v = np.cross(axis, u)
+        u, v = _plane_basis(axis)
         pts_2d = np.column_stack([proj_plane @ u, proj_plane @ v])
-        p2 = pts_2d - pts_2d.mean(axis=0)
-        cov = p2.T @ p2
-        w2, V2 = np.linalg.eigh(cov)
-        proj_main = p2 @ V2[:, int(np.argmax(w2))]
-        proj_orth = p2 @ V2[:, int(np.argmin(w2))]
-        obb_x = proj_main.max() - proj_main.min()
-        obb_y = proj_orth.max() - proj_orth.min()
+        obb_x, obb_y = _cross_section_obb(pts_2d)
         major_half = max(obb_x, obb_y) / 2
         if major_half < 1e-9:
             return 0.0, 0.0, 0.0
@@ -917,7 +936,7 @@ class PointCloudAnalyzer:
         2026-08-13 P0-1 修复: 稀疏点云（N < PROJ_SPARSE_N，真实 STP 边界折点
         仅 16~100 个）置信度封顶在 PROJ_CONF_FLOOR 之下——稀疏折点的圆形投影
         判定不可靠（proj_3rect 误判圆柱、投影尺寸失准），不提前返回，交给
-        PCA+圆形度启发式与 33 方向最小体积圆柱取精确尺寸。
+        PCA+圆形度启发式与 30 方向最小体积圆柱取精确尺寸。
         """
         sparse = self.N < PROJ_SPARSE_N
         stats = []
@@ -1001,23 +1020,11 @@ class PointCloudAnalyzer:
         proj_axial = centered @ cyl_axis
         proj_plane = centered - np.outer(proj_axial, cyl_axis)
 
-        if abs(cyl_axis[2]) < 0.999:
-            u = np.cross(cyl_axis, [0, 0, 1])
-        else:
-            u = np.cross(cyl_axis, [1, 0, 0])
-        u = u / np.linalg.norm(u)
-        v = np.cross(cyl_axis, u)
+        u, v = _plane_basis(cyl_axis)
         pts_2d = np.column_stack([proj_plane @ u, proj_plane @ v])
 
         # 截面真实最小包围矩形（2D PCA，见 _is_cross_section_circular 修正说明）
-        p2 = pts_2d - pts_2d.mean(axis=0)
-        cov = p2.T @ p2
-        w2, V2 = np.linalg.eigh(cov)
-        main = V2[:, int(np.argmax(w2))]
-        proj_main = p2 @ main
-        proj_orth = p2 @ V2[:, int(np.argmin(w2))]
-        obb_x = proj_main.max() - proj_main.min()
-        obb_y = proj_orth.max() - proj_orth.min()
+        obb_x, obb_y = _cross_section_obb(pts_2d)
         major_half = max(obb_x, obb_y) / 2
         minor_half = min(obb_x, obb_y) / 2
 
@@ -1069,12 +1076,7 @@ class PointCloudAnalyzer:
             return float("inf"), 0, 0, None, None, None, None
 
         proj_plane = pts_centered - np.outer(proj_axial, axis)
-        if abs(axis[2]) < 0.999:
-            u = np.cross(axis, [0, 0, 1])
-        else:
-            u = np.cross(axis, [1, 0, 0])
-        u = u / np.linalg.norm(u)
-        v = np.cross(axis, u)
+        u, v = _plane_basis(axis)
         pts_2d = np.column_stack([proj_plane @ u, proj_plane @ v])
         circle_center_2d, radius = min_enclosing_circle_2d(pts_2d)
         volume = np.pi * radius * radius * height
@@ -1151,92 +1153,12 @@ class PointCloudAnalyzer:
                     "center": cyl_c.tolist(),
                     "refined": True,
                 }
-        except Exception:
+        except Exception as e:
+            log.warning("圆柱 NM 精炼失败（保留粗搜索）%s: %s", self.name, e)
             pass  # 精炼失败则保留粗搜索结果
 
         self._cylinder_cache = best
         return best
-
-    # ---------- 综合报告 ----------
-
-    def full_report(self):
-        shape = self.classify_shape()
-        report = {
-            "entity": self.name,
-            "num_points": self.N,
-            "shape_type": shape["shape_cn"],
-            "shape_confidence": shape["confidence"],
-            "pca_eigenvalues": shape["details"]["eigenvalues"],
-            "variance_ratios": shape["details"]["variance_ratios"],
-            "decision_reason": shape.get("decision", "unknown"),
-        }
-
-        if shape["shape_en"] == "cylinder":
-            cyl = self.compute_cylinder()
-            circle = self._try_fit_circle()
-            report["bounding_type"] = "最小体积圆柱体"
-            report["cylinder_radius"] = cyl["radius"]
-            report["cylinder_diameter"] = cyl["diameter"]
-            report["cylinder_height"] = cyl["height"]
-            report["cylinder_volume"] = cyl["volume"]
-            report["cylinder_axis"] = cyl["axis"]
-            if circle:
-                report["circle_fit_diameter"] = circle["diameter"]
-                report["circle_fit_confidence"] = circle["confidence"]
-        else:
-            obb = self.compute_obb()
-            report["bounding_type"] = f"{obb['type']} (有向包围盒)"
-            report["obb_length"] = obb["length"]
-            report["obb_width"] = obb["width"]
-            report["obb_height"] = obb["height"]
-            report["obb_volume"] = obb["volume"]
-            report["obb_axes"] = obb["axes"]
-            # 同时输出圆柱供参考
-            cyl = self.compute_cylinder()
-            report["ref_cylinder_radius"] = cyl["radius"]
-            report["ref_cylinder_height"] = cyl["height"]
-            report["ref_cylinder_volume"] = cyl["volume"]
-
-        return report
-
-    def get_viz_data(self):
-        shape = self.classify_shape()
-        data = {
-            "name": self.name,
-            "num_points": self.N,
-            "points": self.points.tolist(),
-            "shape_cn": shape["shape_cn"],
-            "shape_en": shape["shape_en"],
-            "confidence": shape["confidence"],
-            "pca_axes": self.eigenvectors.tolist(),
-            "pca_center": self.center.tolist(),
-            "pca_scales": (np.sqrt(self.eigenvalues) * 2).tolist(),
-        }
-
-        obb = self.compute_obb()
-        data["obb"] = {
-            "length": obb["length"], "width": obb["width"],
-            "height": obb["height"], "volume": obb["volume"],
-            "center": obb["center"], "corners": obb["corners"],
-            "type": obb.get("type", "OBB"),
-        }
-
-        cyl = self.compute_cylinder()
-        data["cylinder"] = {
-            "radius": cyl["radius"], "height": cyl["height"],
-            "volume": cyl["volume"], "axis": cyl["axis"],
-            "center": cyl["center"],
-        }
-
-        circle = self._try_fit_circle()
-        if circle:
-            data["circle_fit"] = {
-                "radius": circle["radius"],
-                "diameter": circle["diameter"],
-                "confidence": circle["confidence"],
-            }
-
-        return data
 
 
 # ============================================================================

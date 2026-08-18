@@ -587,14 +587,6 @@ class StpFeatureExtractor:
                 dims.append(max(vals) - min(vals))
         return dims
 
-    def _projected_dims(self, pts, axes):
-        """沿主轴投影求尺寸。"""
-        dims = []
-        for ax in axes:
-            p = pts @ ax
-            dims.append(float(p.max() - p.min()))
-        return dims
-
     def _aabb(self, pts):
         if pts is None or len(pts) == 0:
             return (0.0, 0.0, 0.0)

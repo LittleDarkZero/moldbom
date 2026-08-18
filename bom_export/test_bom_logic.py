@@ -101,8 +101,9 @@ def _make_engine():
             "extract_model_from_name": extract_model_from_name}
 
 
-# 注入：bom_export 与 v2_bridge 全部走内存引擎（隔离真实规则文件）
-m._engine_provider = _make_engine
+# 注入：bom_export 全部走内存引擎（隔离真实规则文件）。
+# 推理链 infer_gr_and_detail → v2_bridge.infer_part → get_engine，
+# 故只需替换 v2_bridge.get_engine 即可（2026-08-18 清理死注入点 _engine_provider）。
 v2_bridge.get_engine = _make_engine
 
 

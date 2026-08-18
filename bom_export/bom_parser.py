@@ -111,6 +111,10 @@ def parse_catpart(catia_app, filepath: str, temp_dir: str, progress_cb=None, spl
         else:
             solid_count, stp_path = export_body_to_stp_and_count(catia_app, body, temp_dir)
 
+        # 注意: "数量" 字段全程语义 = 实体数 = BOM 数量；其中 0 是"STP 导出失败"
+        # 的哨兵值（export_body_to_stp_and_count 重试耗尽返回 0），fill_specs_from_stp
+        # 据此跳过测量并记录失败原因，不会作为真实数量进入 BOM。
+
         material = detail["材质"]
         ht = detail["热处理"]
         if ht:

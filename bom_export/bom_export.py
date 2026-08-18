@@ -22,13 +22,13 @@ bom_pipeline / bom_batch / bom_catia / bom_cli）的公共 API 统一再导出�
 
 from bom_common import (  # noqa: F401  —— 基础设施
     __version__, log, _app_dir, _log_dir, _resolve_log_file,
-    retry_on_com_error, DEFAULT_GR, DEFAULT_NUM_RANGE, MOLD_NUMBER_STRIP,
+    DEFAULT_GR, DEFAULT_NUM_RANGE, MOLD_NUMBER_STRIP,
 )
 from bom_utils import (  # noqa: F401  —— 通用工具
     extract_mold_number, _safe_name, _group_by_gr,
 )
 from bom_infer import (  # noqa: F401  —— GR 推理
-    infer_gr_and_detail, infer_gr_name, _apply_spec_gr_v2,
+    infer_gr_and_detail, _apply_spec_gr_v2,
 )
 from bom_stp import (  # noqa: F401  —— STP 导出与计数
     count_solids_in_stp, copy_body_to_new_part, export_body_to_stp_and_count,
@@ -59,20 +59,6 @@ from bom_catia import (  # noqa: F401  —— CATIA 会话 / 缓存清理
 from bom_cli import main  # noqa: F401
 
 import geometry_engine  # noqa: F401  —— 规格测量引擎（测试经 m.geometry_engine 访问）
-
-# 测试注入点（test_bom_logic.py 通过 m._engine_provider 注入内存规则引擎）
-_engine_provider = None
-
-
-def _get_v2_engine():
-    """返回 V2 引擎 dict（engine/canonical_spec/extract_model_from_name）；不可用返回 None。
-
-    测试可注入 _engine_provider 以隔离真实规则文件。
-    """
-    if _engine_provider is not None:
-        return _engine_provider()
-    from v2_bridge import get_engine
-    return get_engine()
 
 
 if __name__ == "__main__":

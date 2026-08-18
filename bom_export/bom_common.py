@@ -11,7 +11,6 @@ import logging
 import os
 import sys
 import tempfile
-import time
 import traceback
 
 # 版本号唯一真源（updater.py 与 bom_cli.py 读取此常量做版本比对）
@@ -78,24 +77,6 @@ def _log_uncaught_exception(exc_type, exc_value, exc_tb):
 
 
 sys.excepthook = _log_uncaught_exception
-
-
-# -------- COM 重试装饰器 --------
-def retry_on_com_error(func):
-    """CATIA COM 操作指数退避重试（最多3次，间隔2s/4s）"""
-    def wrapper(*args, **kwargs):
-        last_err = None
-        for attempt in range(3):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                last_err = e
-                if attempt < 2:
-                    delay = 2 * (2 ** attempt)
-                    log.warning("COM 重试 %d/3, %ds 后: %s", attempt + 1, delay, e)
-                    time.sleep(delay)
-        raise last_err
-    return wrapper
 
 
 # -------- 结构常量（非业务规则；业务规则一律录进 V2 规则编辑器）--------

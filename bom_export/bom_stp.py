@@ -10,7 +10,7 @@ import os
 import re
 import time
 
-from bom_common import log, retry_on_com_error
+from bom_common import log
 
 
 def count_solids_in_stp(stp_path: str) -> int:
@@ -36,9 +36,12 @@ def copy_body_to_new_part(catia_app, src_doc, body):
     return new_doc
 
 
-@retry_on_com_error
 def export_body_to_stp_and_count(catia_app, body, temp_dir: str) -> tuple:
-    """导出 STP 并计数，返回 (数量, stp路径)。内建最多 3 次重试。"""
+    """导出 STP 并计数，返回 (数量, stp路径)。内部已含 3 次重试。
+
+    注意：本函数内部 try/except 吞掉所有异常并在重试耗尽后 return (0, "")，
+    不会向外抛异常——因此不再叠加 @retry_on_com_error（那层装饰器永不触发）。
+    """
     src_doc = body.Parent.Parent.Parent
     docs = catia_app.Documents
     name_hash = hashlib.md5(body.Name.encode('utf-8')).hexdigest()[:16]

@@ -38,10 +38,6 @@ def infer_gr_and_detail(part_name: str) -> dict:
     }
 
 
-def infer_gr_name(part_name: str) -> str:
-    return infer_gr_and_detail(part_name)["零部件GR名"]
-
-
 def _apply_spec_gr_v2(results: list) -> list:
     """规格级精化：V2 规格引擎（唯一规格级路径，2026-08-13）。
 
