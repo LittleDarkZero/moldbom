@@ -6,5 +6,12 @@
     "sha256": "1b74e174927980d35b31d322418004b4522a2a392b46abda94f001c68c317c4a",
     "size": 74819642,
     "notes": "首次发布 v9.3.0：修复 CATIA COM 动态绑定、批量文档泄漏、配套件结构化字段等"
+  },
+  "rules": {
+    "version": "2.0.40",
+    "url": "https://github.com/LittleDarkZero/moldbom/releases/download/rules-v2.0.40/rules.zip",
+    "sha256": "d2681aa8414079cac24d6150dccae984ad46a60cd1de09184f78f71913cbd88c",
+    "size": 10043,
+    "notes": "规则 v2.0.40：10 域口径同步（补 spec 域）"
   }
 }
