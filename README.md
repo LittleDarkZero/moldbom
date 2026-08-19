@@ -95,7 +95,7 @@ C:\Users\littledark\.workbuddy\binaries\python\envs\default\Scripts\python.exe
 
 ```bash
 cd bom_export
-python test_bom_logic.py        # 25 用例（内存引擎注入，无需 CATIA）
+python test_bom_logic.py        # 26 用例（内存引擎注入，无需 CATIA）
 python test_stp_features.py     # 20 用例
 
 cd ../V2

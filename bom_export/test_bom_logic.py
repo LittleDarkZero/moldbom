@@ -261,6 +261,36 @@ def test_assign_numbers_batch_source_matching():
     assert comp["零件号"] == main_a["零件号"] == 1
 
 
+# ---------------- CATIA COM 兼容助手 ----------------
+def test_as_part_document_fallback():
+    """gen_py 静态绑定下 Document 无 Part → 转 PartDocument（2026-08-19 修复）。"""
+    import bom_common
+    import win32com.client as w
+
+    class FakeDocNoPart:
+        @property
+        def Part(self):
+            raise AttributeError("no Part")
+
+    class FakeDocWithPart:
+        Part = "PART"
+
+    d = FakeDocWithPart()
+    sentinel = object()
+    orig_cast = w.CastTo
+
+    def fake_cast(doc, iface):
+        assert iface == "PartDocument"
+        return sentinel
+
+    w.CastTo = fake_cast
+    try:
+        assert bom_common.as_part_document(d) is d          # 已有 Part 直接返回原对象
+        assert bom_common.as_part_document(FakeDocNoPart()) is sentinel  # 无 Part 转 PartDocument
+    finally:
+        w.CastTo = orig_cast
+
+
 # ---------------- 输出格式 ----------------
 def test_write_csv(tmp_path=None):
     import tempfile

@@ -10,7 +10,7 @@ import os
 import re
 import time
 
-from bom_common import log
+from bom_common import log, as_part_document
 
 
 def count_solids_in_stp(stp_path: str) -> int:
@@ -26,7 +26,8 @@ def copy_body_to_new_part(catia_app, src_doc, body):
     调用方负责关闭返回的文档。
     """
     new_doc = catia_app.Documents.Add("Part")
-    new_body = new_doc.Part.MainBody
+    # 2026-08-19: gen_py 静态绑定下 Document 无 Part 属性，需转 PartDocument
+    new_body = as_part_document(new_doc).Part.MainBody
     src_sel = src_doc.Selection
     src_sel.Clear(); src_sel.Add(body); src_sel.Copy(); src_sel.Clear()
     new_doc.Activate()
@@ -56,7 +57,7 @@ def export_body_to_stp_and_count(catia_app, body, temp_dir: str, seq: int = 0) -
         try:
             # 稳定性：导出前刷新几何
             if attempt > 0:
-                try: src_doc.Part.Update()
+                try: as_part_document(src_doc).Part.Update()
                 except Exception: pass
                 time.sleep(0.3)
 

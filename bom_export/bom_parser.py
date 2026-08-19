@@ -8,7 +8,7 @@
 import os
 import re
 
-from bom_common import log
+from bom_common import log, as_part_document
 from bom_infer import infer_gr_and_detail
 from bom_stp import export_body_to_stp_and_count
 
@@ -49,7 +49,8 @@ def _show_all_bodies(doc, bodies):
 def parse_catpart(catia_app, filepath: str, temp_dir: str, progress_cb=None):
     filepath = os.path.normpath(filepath)
     doc = catia_app.Documents.Open(filepath)
-    part = doc.Part
+    # 2026-08-19: gen_py 静态绑定下 Document 无 Part 属性，需转 PartDocument
+    part = as_part_document(doc).Part
     bodies = part.Bodies
 
     # 显示所有隐藏的 Body（隐藏的 Body 无法 Copy/PasteSpecial 导出实体）

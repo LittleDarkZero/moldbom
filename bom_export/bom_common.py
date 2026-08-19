@@ -17,6 +17,22 @@ import traceback
 __version__ = "9.3.0"
 
 
+# -------- CATIA COM 兼容助手 --------
+def as_part_document(doc):
+    """把 CATIA COM Document 安全转成 PartDocument 接口。
+
+    规避静态绑定（gen_py）下基础 Document 没有 Part 属性的问题：
+    Documents.Open() / Documents.Add() 返回的是 Document，而 Part 属性
+    只存在于 PartDocument（2026-08-19 运行时报错修复）。
+    """
+    try:
+        _ = doc.Part
+        return doc
+    except AttributeError:
+        from win32com.client import CastTo
+        return CastTo(doc, "PartDocument")
+
+
 # -------- 路径解析 --------
 def _app_dir():
     """获取打包资源目录（兼容 PyInstaller 打包）。
