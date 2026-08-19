@@ -61,7 +61,7 @@ moldbom/
 ## 快速开始（开发模式）
 
 ```bash
-# 1. 安装依赖
+# 1. 安装依赖（或用下方“本机预置环境”，可跳过）
 pip install -r requirements.txt
 
 # 2. 运行 GUI
@@ -72,15 +72,36 @@ python bom_export/bom_export.py <CATPart路径> [输出Excel路径]
 python bom_export/bom_export.py --batch <文件夹路径>
 ```
 
+## 本机预置环境（推荐）
+
+本机已配置好独立 Python 环境（Python 3.13.14，含 numpy / scipy / openpyxl /
+pywin32 / pytest / pyinstaller），路径：
+
+```
+C:\Users\littledark\.workbuddy\binaries\python\envs\default\Scripts\python.exe
+```
+
+- 一键跑全部测试：
+  ```bash
+  powershell -ExecutionPolicy Bypass -File scripts\run_tests.ps1
+  ```
+- 开发模式启动 GUI / CLI：双击仓库根目录 `run.bat`，或
+  ```bash
+  run.bat <CATPart路径> [输出Excel路径]
+  run.bat --batch <文件夹路径>
+  ```
+
 ## 运行测试
 
 ```bash
 cd bom_export
-python test_bom_logic.py        # 22 用例（内存引擎注入，无需 CATIA）
-python test_stp_features.py     # 17 用例
+python test_bom_logic.py        # 25 用例（内存引擎注入，无需 CATIA）
+python test_stp_features.py     # 20 用例
 
 cd ../V2
-python tests/test_engine.py     # 规则引擎 25 用例
+python tests/test_engine.py     # 规则引擎 26 用例
+python tests/test_namespec_infer.py  # nameSpec 7 用例
+python tests/test_keyword_op.py      # keyword 3 用例
 
 # 点云基准验证（50 例）需要专有基准数据 TEST/（不入库），clone 后无此目录属正常
 # python bom_export/verify_user_confirmed.py

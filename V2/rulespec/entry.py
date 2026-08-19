@@ -27,7 +27,11 @@ PLAIN_NAMES = {
 
 
 def find_existing(rules_list, domain, scope, when):
-    """找同零件（+同规格）的已有规则 → 更新而非重复新增。"""
+    """找同零件（+同规格）的已有规则 → 更新而非重复新增。
+
+    2026-08-19 修复：零件名改为**精确匹配**。旧实现用双向子串判断，
+    “调整板2”会误命中“调整板”的规则，导致更新到错误规则。
+    """
     want_name = when["part.workingName"]["value"]
     want_spec = canonical_spec(when.get("spec.value", {}).get("value"))
     for r in rules_list:
@@ -37,8 +41,7 @@ def find_existing(rules_list, domain, scope, when):
         nm = rw.get("part.workingName")
         if not isinstance(nm, dict):
             continue
-        if not (want_name in str(nm.get("value", ""))
-                or str(nm.get("value", "")) in want_name):
+        if str(nm.get("value", "")) != want_name:
             continue
         rspec = canonical_spec(rw.get("spec.value", {}).get("value")) \
             if isinstance(rw.get("spec.value"), dict) else None
@@ -54,7 +57,10 @@ def next_id(rules_list, domain, scope):
     for r in rules_list:
         rid = r.get("id", "")
         if rid.startswith(prefix):
-            seq = max(seq, int(rid.rsplit(".", 1)[-1]) + 1)
+            try:
+                seq = max(seq, int(rid.rsplit(".", 1)[-1]) + 1)
+            except ValueError:
+                continue  # 非数字尾号跳过，不中断编号分配
     return f"{prefix}{seq:03d}"
 
 

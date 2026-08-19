@@ -10,7 +10,7 @@
 
 用法：
   # 发布 exe
-  python publish_release.py exe dist/BomExport/BomExport.exe [--notes "更新说明"]
+  python publish_release.py exe dist/BomExport.exe [--notes "更新说明"]
 
   # 发布规则
   python publish_release.py rules V2/rules [--notes "更新说明"]
@@ -27,16 +27,23 @@
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
+import re
 import sys
 import tempfile
-import urllib.request
 import urllib.error
+import urllib.parse
+import urllib.request
 import zipfile
 
 API_BASE = "https://api.github.com"
 CHUNK = 64 * 1024
+
+
+class ReleaseError(Exception):
+    """发布流程错误（main 统一捕获并退出，避免库函数直接 sys.exit）。"""
 
 
 def _sha256_file(path):
@@ -86,8 +93,7 @@ def _api_request(method, url, token, data=None, content_type="application/json",
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
             if e.code in (404, 401, 403):
-                print("GitHub API 错误 %d: %s" % (e.code, err_body[:200]))
-                sys.exit(1)
+                raise ReleaseError("GitHub API 错误 %d: %s" % (e.code, err_body[:200]))
             last_err = "%d %s" % (e.code, err_body[:200])
         except (urllib.error.URLError, OSError) as e:
             last_err = str(e)
@@ -95,12 +101,11 @@ def _api_request(method, url, token, data=None, content_type="application/json",
             import time
             time.sleep(2 ** attempt)
 
-    print("GitHub API 请求失败（重试 %d 次）: %s" % (max_retries, last_err))
-    sys.exit(1)
+    raise ReleaseError("GitHub API 请求失败（重试 %d 次）: %s" % (max_retries, last_err))
 
 
-def _upload_asset(upload_url, asset_path, token, asset_name=None):
-    """上传 asset 到 Release（使用 uploads.github.com）。"""
+def _upload_asset(upload_url, asset_path, token, asset_name=None, max_retries=3):
+    """上传 asset 到 Release（使用 uploads.github.com，文件流式上传不整读内存）。"""
     if asset_name is None:
         asset_name = os.path.basename(asset_path)
 
@@ -111,14 +116,44 @@ def _upload_asset(upload_url, asset_path, token, asset_name=None):
     size = os.path.getsize(asset_path)
     print("  上传 %s (%.1f MB)..." % (asset_name, size / 1048576))
 
-    with open(asset_path, "rb") as f:
-        data = f.read()
+    parsed = urllib.parse.urlsplit(url)
+    conn_host = parsed.hostname
+    conn_port = parsed.port or 443
+    path = parsed.path + (("?" + parsed.query) if parsed.query else "")
 
-    result = _api_request("POST", url, token, data=data,
-                          content_type="application/octet-stream")
-    browser_url = result.get("browser_download_url", "")
-    print("  上传完成: %s" % browser_url)
-    return browser_url
+    last_err = None
+    for attempt in range(max_retries):
+        conn = None
+        try:
+            conn = http.client.HTTPSConnection(conn_host, conn_port, timeout=300)
+            headers = {
+                "Authorization": "Bearer " + token,
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "Content-Type": "application/octet-stream",
+                "Content-Length": str(size),
+                "User-Agent": "BomExport-Publish/1.0",
+            }
+            try:
+                with open(asset_path, "rb") as f:
+                    conn.request("POST", path, body=f, headers=headers)
+                resp = conn.getresponse()
+                raw = resp.read()
+                status = resp.status
+            finally:
+                conn.close()
+            if status not in (200, 201):
+                raise ReleaseError("上传失败 %d: %s" % (status, raw[:200]))
+            result = json.loads(raw) if raw else {}
+            browser_url = result.get("browser_download_url", "")
+            print("  上传完成: %s" % browser_url)
+            return browser_url
+        except (OSError, http.client.HTTPException, json.JSONDecodeError) as e:
+            last_err = str(e)
+            if attempt < max_retries - 1:
+                import time
+                time.sleep(2 ** attempt)
+    raise ReleaseError("上传 asset 失败（重试 %d 次）: %s" % (max_retries, last_err))
 
 
 def _get_repo_info(token, repo):
@@ -133,8 +168,8 @@ def _get_file_sha(token, repo, branch, path):
     try:
         result = _api_request("GET", url, token)
         return result.get("sha")
-    except SystemExit:
-        return None
+    except ReleaseError:
+        return None  # 文件不存在（404）时视为新建
 
 
 def _update_json_file(token, repo, branch, updates):
@@ -192,18 +227,19 @@ def create_release(token, repo, tag, title, notes=""):
 def publish_exe(token, repo, exe_path, notes="", version=None):
     """发布 exe 更新。"""
     if version is None:
-        # 尝试从 bom_export.py 读取版本
+        # 版本号唯一真源在 bom_common.py（2026-08-19 修复：重构后 bom_export.py
+        # 只是门面，不再直接定义 __version__，旧解析会 IndexError）
         exe_dir = os.path.dirname(os.path.abspath(__file__))
-        bom_path = os.path.join(exe_dir, "bom_export.py")
-        if os.path.exists(bom_path):
-            with open(bom_path, "r", encoding="utf-8") as f:
+        common_path = os.path.join(exe_dir, "bom_common.py")
+        if os.path.exists(common_path):
+            with open(common_path, "r", encoding="utf-8") as f:
                 for line in f:
-                    if line.strip().startswith("__version__"):
-                        version = line.split("=")[1].strip().strip('"').strip("'")
+                    m = re.match(r"__version__\s*=\s*['\"]([^'\"]+)['\"]", line.strip())
+                    if m:
+                        version = m.group(1)
                         break
     if not version:
-        print("错误: 无法确定 exe 版本号，请用 --version 指定")
-        sys.exit(1)
+        raise ReleaseError("无法确定 exe 版本号，请用 --version 指定")
 
     sha256 = _sha256_file(exe_path)
     size = os.path.getsize(exe_path)
@@ -236,8 +272,7 @@ def publish_rules(token, repo, rules_dir, notes="", version=None):
                 data = json.load(f)
                 version = data.get("version")
     if not version:
-        print("错误: 无法确定规则版本号，请用 --version 指定")
-        sys.exit(1)
+        raise ReleaseError("无法确定规则版本号，请用 --version 指定")
 
     # 打 zip（manifest.json + *.rules.json，排除 snapshots/candidates）
     zip_path = os.path.join(tempfile.gettempdir(), "rules.zip")
@@ -292,39 +327,46 @@ def main():
         print("错误: 请设置 GITHUB_REPO 环境变量（如 owner/repo）")
         sys.exit(1)
 
-    if args.type == "exe":
-        # 默认路径 = 本目录下 dist/BomExport.exe（PyInstaller 默认输出）
-        if not args.path:
-            args.path = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "dist", "BomExport.exe")
-        if not os.path.exists(args.path):
-            print("错误: exe 文件不存在: %s" % args.path)
-            sys.exit(1)
-        publish_exe(token, repo, args.path, args.notes, args.version)
+    try:
+        if args.type == "exe":
+            # 默认路径 = 本目录下 dist/BomExport.exe（PyInstaller 默认输出）
+            if not args.path:
+                args.path = os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)), "dist", "BomExport.exe")
+            if not os.path.exists(args.path):
+                print("错误: exe 文件不存在: %s" % args.path)
+                sys.exit(1)
+            publish_exe(token, repo, args.path, args.notes, args.version)
 
-    elif args.type == "rules":
-        # 默认路径 = 仓库根下 V2/rules（本脚本在 bom_export/ 内，../V2/rules）
-        if not args.path:
-            args.path = os.path.normpath(os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "..", "V2", "rules"))
-        if not os.path.isdir(args.path):
-            print("错误: 规则目录不存在: %s" % args.path)
-            sys.exit(1)
-        publish_rules(token, repo, args.path, args.notes, args.version)
+        elif args.type == "rules":
+            # 默认路径 = 仓库根下 V2/rules（本脚本在 bom_export/ 内，../V2/rules）
+            if not args.path:
+                args.path = os.path.normpath(os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)), "..", "V2", "rules"))
+            if not os.path.isdir(args.path):
+                print("错误: 规则目录不存在: %s" % args.path)
+                sys.exit(1)
+            publish_rules(token, repo, args.path, args.notes, args.version)
 
-    elif args.type == "manifest":
-        # 仅更新 update.json
-        updates = {}
-        if args.exe_version and args.exe_url:
-            updates["exe"] = {"version": args.exe_version, "url": args.exe_url}
-        if args.rules_version and args.rules_url:
-            updates["rules"] = {"version": args.rules_version, "url": args.rules_url}
-        if not updates:
-            print("错误: manifest 模式需要 --exe-version/--exe-url 或 --rules-version/--rules-url")
-            sys.exit(1)
-        branch = _get_repo_info(token, repo)
-        _update_json_file(token, repo, branch, updates)
-        print("update.json 已更新")
+        elif args.type == "manifest":
+            # 仅更新 update.json
+            updates = {}
+            if args.exe_version and args.exe_url:
+                updates["exe"] = {"version": args.exe_version, "url": args.exe_url}
+            if args.rules_version and args.rules_url:
+                updates["rules"] = {"version": args.rules_version, "url": args.rules_url}
+            if not updates:
+                print("错误: manifest 模式需要 --exe-version/--exe-url 或 --rules-version/--rules-url")
+                sys.exit(1)
+            branch = _get_repo_info(token, repo)
+            _update_json_file(token, repo, branch, updates)
+            print("update.json 已更新")
+    except ReleaseError as e:
+        print("错误: %s" % e)
+        sys.exit(1)
+    except Exception as e:  # noqa: BLE001 发布脚本兜底，避免裸 traceback
+        print("发布失败: %s" % e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

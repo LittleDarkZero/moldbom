@@ -209,6 +209,58 @@ def test_companions_multi_spec():
     assert by.get(("螺钉", "CB8-16")) == 8
 
 
+def test_companions_structured_fields():
+    """配套件带结构化字段 _is_companion/_parent_ref/_source（2026-08-19 P1-5 修复）。"""
+    rows = [_mk("定1模框", qty=2)]
+    rows[0]["_source"] = "A.CATPart"
+    out = m.add_companions(rows)
+    comps = [r for r in out if r.get("_is_companion")]
+    assert len(comps) == 1
+    assert comps[0]["_parent_ref"] == "定1模框"
+    assert comps[0]["_source"] == "A.CATPart"
+    assert comps[0]["备注"].startswith("→ ")  # 旧字符串契约保留兼容
+
+
+def test_companion_over_limit_blocked():
+    """P1-8：CB>M20 / CBW>16 配套件被拦截，不进入 BOM。"""
+    rows = [{
+        "零件号": "", "零部件名": "测试板", "数量": 1, "规格": "", "材质": "",
+        "零件GR号": "自制件", "零部件GR名": "", "备注": "", "加工备注": "",
+        "_v2": {"companions": [
+            {"name": "螺钉", "spec": "CB24-100", "qty": 2, "gr": "标准件"},
+            {"name": "弹簧垫圈", "spec": "CBW20", "qty": 2, "gr": "标准件"},
+            {"name": "螺钉", "spec": "CB16-100", "qty": 2, "gr": "标准件"},
+        ]},
+    }]
+    out = m.add_companions(rows)
+    comps = [r for r in out if r.get("_is_companion")]
+    # CB24 / CBW20 被拦截，CB16 保留
+    assert [(c["零部件名"], c["规格"]) for c in comps] == [("螺钉", "CB16-100")]
+
+
+def test_assign_numbers_batch_source_matching():
+    """批量模式：同名父件按 _source 配对，配套件不串号（2026-08-19 修复）。"""
+    rows = [
+        {"零件号": "", "零部件名": "模框", "数量": 1, "规格": "", "材质": "",
+         "零件GR号": "模架", "零部件GR名": "", "备注": "", "加工备注": "",
+         "_v2": {"numberRange": {"min": 1, "max": 99}}, "_source": "A.CATPart"},
+        {"零件号": "", "零部件名": "模框", "数量": 1, "规格": "", "材质": "",
+         "零件GR号": "模架", "零部件GR名": "", "备注": "", "加工备注": "",
+         "_v2": {"numberRange": {"min": 1, "max": 99}}, "_source": "B.CATPart"},
+        {"零件号": "", "零部件名": "螺钉", "数量": 4, "规格": "M8*30", "材质": "",
+         "零件GR号": "标准件", "零部件GR名": "", "备注": "→ 模框", "加工备注": "",
+         "_v2": {}, "_source": "A.CATPart", "_is_companion": True, "_parent_ref": "模框"},
+    ]
+    out = m.assign_part_numbers(rows)
+    by_name = {r["零部件名"]: r for r in out}
+    # 两个同名主件各自有零件号（1、2）；A 文件的螺钉继承 A 文件的模框号
+    nos = sorted(r["零件号"] for r in out if r["零部件名"] == "模框")
+    assert nos == [1, 2]
+    comp = by_name["螺钉"]
+    main_a = [r for r in out if r["零部件名"] == "模框" and r["_source"] == "A.CATPart"][0]
+    assert comp["零件号"] == main_a["零件号"] == 1
+
+
 # ---------------- 输出格式 ----------------
 def test_write_csv(tmp_path=None):
     import tempfile

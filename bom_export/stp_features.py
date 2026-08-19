@@ -384,10 +384,11 @@ class StpFeatureExtractor:
             normals = [f["axis"] for f in faces
                        if f["type"] == SURF_PLANE and f["axis"] is not None]
             axes = self._group_normals(normals)
+            dims = None
             if len(axes) >= 2:
                 dims = self._plane_axis_dims(faces, axes, pts,
                                              solid.get("circle_centers"))
-            if len(dims) >= 3 and min(dims) > 1e-6:
+            if dims is not None and len(dims) >= 3 and min(dims) > 1e-6:
                 dims_sorted = tuple(sorted(dims, reverse=True))
                 return {"shape": "box", "dims": dims_sorted,
                         "spec": self._spec_str(dims_sorted),

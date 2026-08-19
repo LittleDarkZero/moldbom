@@ -3,11 +3,12 @@
   "version": "2.0.40",
   "author": "littledark",
   "createdAt": "2026-08-04",
-  "updatedAt": "2026-08-04",
+  "updatedAt": "2026-08-19",
   "domains": [
     "filter",
     "normalize",
     "gr",
+    "spec",
     "material",
     "remark",
     "companion",

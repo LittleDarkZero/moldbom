@@ -66,6 +66,9 @@ def main():
 
         # 处理 --batch 模式
         if sys.argv[1] == "--batch":
+            if len(sys.argv) < 3:
+                print("用法: python bom_export.py --batch <文件夹路径>")
+                sys.exit(1)
             try: catia = win32com.client.GetActiveObject("CATIA.Application")
             except Exception:
                 catia = win32com.client.Dispatch("CATIA.Application")

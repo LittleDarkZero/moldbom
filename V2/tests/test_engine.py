@@ -7,6 +7,12 @@
 import os
 import sys
 
+# Windows GBK 控制台也能打印 ✓/✗（2026-08-19 修复）
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from rulespec import lifecycle, schema                       # noqa: E402
@@ -296,6 +302,20 @@ def test_rule_meta_tests_referenced():
     for r in rules:
         for t in r.get("meta", {}).get("tests", []):
             assert t in cids, f"{r['id']} 引用不存在的语料 {t}"
+
+
+def test_entry_find_existing_exact_match():
+    """同零件判断必须精确匹配（2026-08-19 修复：子串双向匹配会误更新规则）。"""
+    from rulespec.entry import find_existing
+    when_a = {"part.workingName": {"op": "contains", "value": "调整板"}}
+    when_b = {"part.workingName": {"op": "contains", "value": "调整板2"}}
+    rules = [
+        {"id": "gr.wizard.part.001", "domain": "gr", "scope": "part",
+         "when": when_a, "then": {"gr": "仓库备件"},
+         "meta": {"status": "active", "version": 1}},
+    ]
+    assert find_existing(rules, "gr", "part", when_b) is None
+    assert find_existing(rules, "gr", "part", when_a) is not None
 
 
 # ---------------- 生命周期 ----------------

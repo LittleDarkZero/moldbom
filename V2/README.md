@@ -8,15 +8,15 @@
 ```
 V2/
 ├── rulespec/                  # 规则引擎（纯 Python，零 GUI 依赖）
-│   ├── schema.py              #   域/作用域/算子/属性词汇表/唯一归属表（9 域，无 merge）
-│   ├── matcher.py             #   条件匹配器（8 算子 + 规格规范化 ×→*）
+│   ├── schema.py              #   域/作用域/算子/属性词汇表/唯一归属表（10 域，无 merge）
+│   ├── matcher.py             #   条件匹配器（9 算子 + 规格规范化 ×→*）
 │   ├── model.py               #   规则模型：加载/原子保存/门禁 G1+G3 校验
 │   ├── engine.py              #   推理引擎：流水线 + 裁决 + provenance + 冲突报错
 │   ├── validator.py           #   门禁 G4（静态冲突）+ G5（语料干跑）
 │   ├── corpus.py              #   基准语料加载
 │   ├── lifecycle.py           #   快照 / 回滚 / 语义化版本
 │   └── cli.py                 #   python -m rulespec validate|dryrun|new|snapshot|restore
-├── rules/                     # 规则集（9 域文件 + manifest + snapshots/ + candidates/）
+├── rules/                     # 规则集（10 域文件 + manifest + snapshots/ + candidates/）
 ├── corpus/                    # 基准语料（13 条人工确认样本）
 ├── editor.py                  # 新规则编辑器（tkinter）
 ├── docs/规则系统设计规范.md    # 权威设计规范（v1.1，9 域修订版）
@@ -57,8 +57,8 @@ python -m rulespec restore 1.0.1 # 回滚到快照
 
 ## 核心机制速览
 
-- **统一规则模型**：`id / domain / priority / scope / when / then / meta`，9 域共用一套 schema；
-- **流水线**（无 merge）：`filter → normalize → gr → measure → material → remark → companion → purchase → number`；
+- **统一规则模型**：`id / domain / priority / scope / when / then / meta`，10 域共用一套 schema；
+- **流水线**（无 merge）：`filter → normalize → gr → spec → measure → material → remark → companion → purchase → number`；
 - **裁决**：priority 降序 → specificity 降序（条件权重和）→ id 字典序；同强度异值 = 报错（零猜测）；
 - **唯一归属**：每个输出属性只有一个域可写（`OWNERSHIP` 表）——平行表在结构上不可能存在；
 - **门禁 G1-G6**：结构 / 命名 / 引用 / 静态冲突 / 语料干跑 / 快照；保存被阻断时规则停留在 draft，不污染线上；

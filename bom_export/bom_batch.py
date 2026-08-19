@@ -25,8 +25,12 @@ def _batch_parse_one(catia_app, cp, per_file_stages):
     src_doc = None
     try:
         ctx = default_ctx(catia_app, os.path.abspath(cp), temp_dir, "")
-        ctx = run_pipeline(ctx, stages=per_file_stages)
-        src_doc = ctx.get("src_doc")
+        try:
+            ctx = run_pipeline(ctx, stages=per_file_stages)
+        finally:
+            # 异常路径也要先拿到 src_doc，再交给外层 finally 关闭（2026-08-19 修复：
+            # 原来 run_pipeline 抛异常时 src_doc 仍为 None，CATIA 文档会泄漏）
+            src_doc = ctx.get("src_doc")
         for item in ctx["results"]:
             item["_source"] = os.path.basename(cp)
         return ctx["results"]

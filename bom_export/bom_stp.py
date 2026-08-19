@@ -36,15 +36,18 @@ def copy_body_to_new_part(catia_app, src_doc, body):
     return new_doc
 
 
-def export_body_to_stp_and_count(catia_app, body, temp_dir: str) -> tuple:
+def export_body_to_stp_and_count(catia_app, body, temp_dir: str, seq: int = 0) -> tuple:
     """导出 STP 并计数，返回 (数量, stp路径)。内部已含 3 次重试。
 
     注意：本函数内部 try/except 吞掉所有异常并在重试耗尽后 return (0, "")，
     不会向外抛异常——因此不再叠加 @retry_on_com_error（那层装饰器永不触发）。
+
+    seq：Body 在遍历中的序号，参与临时文件名哈希，避免同名 Body 互相覆盖
+    （2026-08-19 修复）。
     """
     src_doc = body.Parent.Parent.Parent
     docs = catia_app.Documents
-    name_hash = hashlib.md5(body.Name.encode('utf-8')).hexdigest()[:16]
+    name_hash = hashlib.md5(f"{seq}:{body.Name}".encode('utf-8')).hexdigest()[:16]
     stp_path = os.path.join(temp_dir, f"_tmp_{name_hash}.stp")
 
     last_error = None

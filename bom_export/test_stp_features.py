@@ -10,6 +10,12 @@ import math
 
 import numpy as np
 
+# Windows GBK 控制台也能打印 ✓/✗（2026-08-19 修复）
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import stp_features as S
 
@@ -105,6 +111,16 @@ pure = make_solid(
 b2 = ex.compute_bbox(pure)
 check("纯盒(6平面) → box", b2["shape"] == "box")
 check("  规格 40*30*20", b2["spec"] == "40*30*20", b2["spec"])
+
+print("== 退化 box 兜底（2026-08-19 修复 NameError）==")
+# 6 个平面法向全相同（解析异常/退化）→ _group_normals 只有 1 组主轴，
+# 旧代码会 NameError；修复后应走点 AABB 兜底不崩。
+degen = make_solid(
+    [plane(1, 0, 0, 0, 0, 0)] * 6,
+    box_corners(10, 8, 6))
+d3 = ex.compute_bbox(degen)
+check("退化 box 兜底不崩", d3["shape"] in ("box", "mixed"), d3["detail"])
+check("  规格非空", bool(d3["spec"]), d3["spec"])
 
 print("== 孔提取（合成：板带 2 个 Φ14 通孔）==")
 # 板 100×50×10，2 个 Φ14 孔（r=7，孔轴沿 x），各孔 2 个圆柱面（配对）

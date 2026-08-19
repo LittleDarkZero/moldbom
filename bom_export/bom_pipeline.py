@@ -70,7 +70,7 @@ def run_pipeline(ctx: dict, stages=None) -> dict:
 
 def _stage_parse(ctx):
     r = parse_catpart(ctx["catia"], ctx["filepath"], ctx["temp_dir"],
-                      progress_cb=ctx.get("progress_cb"), split_dir=ctx.get("split_dir", ""))
+                      progress_cb=ctx.get("progress_cb"))
     ctx["results"], ctx["skipped"], ctx["excluded"], ctx["src_doc"], ctx["body_refs"] = r
     return ctx
 

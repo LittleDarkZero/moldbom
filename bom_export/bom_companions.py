@@ -5,6 +5,29 @@
 紧固件数)，配套件 GR 由 V2 引擎按 companionGrPolicy 解析。
 """
 
+import re
+
+from bom_common import log
+
+# P1-8：配套件规格上限（业务决策：CB>M20、CBW>16 拦截）
+CB_MAX_SIZE = 20     # CB 螺钉上限 M20
+CBW_MAX_SIZE = 16    # CBW 弹簧垫圈上限 16
+
+
+def _companion_over_limit(c: dict) -> bool:
+    """判断紧固件是否超规格上限：CB 系列 > M20、CBW 系列 > 16。"""
+    name = str(c.get("name", ""))
+    spec = str(c.get("spec", ""))
+    m = re.match(r"^CBW?(\d+)", spec)
+    if not m:
+        return False
+    size = int(m.group(1))
+    if name.startswith("CBW") or spec.startswith("CBW"):
+        return size > CBW_MAX_SIZE
+    if name.startswith("CB") or spec.startswith("CB"):
+        return size > CB_MAX_SIZE
+    return False
+
 
 def add_companions(results: list) -> list:
     """配套补全（2026-08-13 V2 化：companion 域为唯一规则源）。
@@ -41,12 +64,21 @@ def add_companions(results: list) -> list:
                 _acc_companion(agg, c, parent_qty)
 
         for (cname, cspec), (qty, comp_gr) in agg.items():
+            # P1-8 规格上限校验：CB>M20 / CBW>16 拦截（不进入 BOM + 日志告警）
+            if _companion_over_limit({"name": cname, "spec": cspec}):
+                log.warning("配套件规格超上限已拦截: %s %s ×%d（CB≤M%d / CBW≤M%d）",
+                            cname, cspec, qty, CB_MAX_SIZE, CBW_MAX_SIZE)
+                continue
             row = _make_companion({
                 "零部件名": cname,
                 "规格": cspec,
                 "数量": qty,
                 "GR": comp_gr,
             }, name, item.get("零件GR号", ""))
+            # 结构化父件引用（2026-08-19 修复 P1-5：不再只靠 "→ " 字符串前缀）
+            row["_is_companion"] = True
+            row["_parent_ref"] = name
+            row["_source"] = item.get("_source", "")
             if row["零件GR号"] == "模架":
                 v2_mold.append(row)
             else:
@@ -93,4 +125,6 @@ def _make_companion(comp: dict, parent_name: str, parent_gr: str = "") -> dict:
         "规格": comp.get("规格", ""), "材质": mat,
         "零件GR号": comp_gr, "零部件GR名": "",
         "备注": f"→ {parent_name}", "加工备注": comp.get("加工备注", ""),
+        # 结构化字段（P1-5）：_is_companion 判定配套件，_parent_ref 记录父件
+        "_is_companion": True, "_parent_ref": parent_name,
     }

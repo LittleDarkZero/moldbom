@@ -14,9 +14,19 @@ def assign_part_numbers(results: list) -> list:
     每个主件按 V2 推理的 numberRange {min,max} 分桶（自旧 part_number_ranges
     迁移：模架 1-99 / 自制·镶配 100-199 / 其余 200+），桶内按原顺序自 min 递增；
     配套件继承父件零件号。V2 不可用/未命中 → DEFAULT_NUM_RANGE。
+
+    2026-08-19 修复：
+      - 配套件识别改用结构化字段 _is_companion / _parent_ref（P1-5），
+        不再依赖 "→ " 字符串前缀；
+      - 批量模式按 _source 配对，避免跨文件同名零件串号。
     """
-    main_parts = [r for r in results if not r["备注"].startswith("→ ")]
-    companions = [r for r in results if r["备注"].startswith("→ ")]
+    def _is_comp(r):
+        if r.get("_is_companion"):
+            return True
+        return str(r.get("备注", "")).startswith("→ ")  # 旧数据兼容
+
+    main_parts = [r for r in results if not _is_comp(r)]
+    companions = [r for r in results if _is_comp(r)]
 
     buckets = {}  # min → [items]（插入序保持 results 顺序）
     for item in main_parts:
@@ -31,13 +41,17 @@ def assign_part_numbers(results: list) -> list:
             no += 1
 
     for comp in companions:
-        parent_name = comp["备注"].replace("→ ", "")
+        parent_name = comp.get("_parent_ref") or comp["备注"].replace("→ ", "")
+        comp_source = comp.get("_source", "")
         for item in main_parts:
-            if item["零部件名"] == parent_name:
-                comp["零件号"] = item["零件号"]; break
+            if item["零部件名"] != parent_name:
+                continue
+            if comp_source and item.get("_source", "") != comp_source:
+                continue  # 批量模式：只挂到同文件父件，防串号
+            comp["零件号"] = item["零件号"]; break
 
     def sort_key(x):
         no = x.get("零件号", 999)
-        is_comp = 1 if x["备注"].startswith("→ ") else 0
+        is_comp = 1 if _is_comp(x) else 0
         return (no, is_comp)
     return sorted(results, key=sort_key)

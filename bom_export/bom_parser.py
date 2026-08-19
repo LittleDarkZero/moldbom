@@ -46,7 +46,7 @@ def _show_all_bodies(doc, bodies):
     log.info("已显示所有元素（Body + 几何体）")
 
 
-def parse_catpart(catia_app, filepath: str, temp_dir: str, progress_cb=None, split_dir: str = ""):
+def parse_catpart(catia_app, filepath: str, temp_dir: str, progress_cb=None):
     filepath = os.path.normpath(filepath)
     doc = catia_app.Documents.Open(filepath)
     part = doc.Part
@@ -109,7 +109,8 @@ def parse_catpart(catia_app, filepath: str, temp_dir: str, progress_cb=None, spl
         if fixed_qty:
             solid_count, stp_path = int(fixed_qty), ""
         else:
-            solid_count, stp_path = export_body_to_stp_and_count(catia_app, body, temp_dir)
+            solid_count, stp_path = export_body_to_stp_and_count(
+                catia_app, body, temp_dir, seq=i)
 
         # 注意: "数量" 字段全程语义 = 实体数 = BOM 数量；其中 0 是"STP 导出失败"
         # 的哨兵值（export_body_to_stp_and_count 重试耗尽返回 0），fill_specs_from_stp

@@ -89,7 +89,7 @@ def extract_aabb_from_stp(stp_path):
     try:
         _, pts = _parse_stp_entities(stp_path)
         return _points_to_spec_str(list(pts.values())) if pts else _points_to_spec_str(_parse_stp_fallback(stp_path))
-    except:
+    except Exception:  # noqa: BLE001 测量兜底不抛
         return ""
 
 
@@ -285,7 +285,8 @@ def fill_specs_from_stp(results: list) -> list:
         tasks = [(item["_stp_path"], item.get("数量", 1), idx, item["零部件名"])
                  for idx, item in enumerate(need_measure)]
         completed = 0
-        with ProcessPoolExecutor(max_workers=min(total, os.cpu_count() or 4)) as pool:
+        # 2026-08-19: 进程数设上限（每进程都要 import numpy/scipy，过多会吃满内存）
+        with ProcessPoolExecutor(max_workers=min(total, os.cpu_count() or 4, 8)) as pool:
             futures = {pool.submit(_measure_one_spec, (t[0], t[1])): t for t in tasks}
             for future in as_completed(futures):
                 stp_path, solid_count, idx, name = futures[future]

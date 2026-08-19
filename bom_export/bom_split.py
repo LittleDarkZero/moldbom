@@ -29,7 +29,13 @@ def export_split_parts(catia_app, doc, body_refs: dict, results: list, output_di
     CATPart 先存 ASCII 临时目录（CATIA SaveAs 中文路径会失败），再用 Python 移到中文文件夹。
     """
     mold_num = extract_mold_number(filepath)
-    main_parts = [r for r in results if not r.get("备注", "").startswith("→ ")]
+
+    def _is_comp(r):
+        if r.get("_is_companion"):
+            return True
+        return str(r.get("备注", "")).startswith("→ ")  # 旧数据兼容
+
+    main_parts = [r for r in results if not _is_comp(r)]
 
     parts_root = os.path.join(output_dir, f"{_safe_name(mold_num)}-parts")
     tmp_dir = os.path.join(output_dir, "_parts_tmp")
@@ -51,7 +57,8 @@ def export_split_parts(catia_app, doc, body_refs: dict, results: list, output_di
 
         # 复制 Body 到新 Part，存 ASCII 临时路径
         new_doc = copy_body_to_new_part(catia_app, doc, body)
-        file_name = "{}-part{}.CATPart".format(mold_num, part_no)
+        # 2026-08-19: 模号做文件名安全化，避免非法字符导致 SaveAs 失败
+        file_name = "{}-part{}.CATPart".format(_safe_name(mold_num), part_no)
         tmp_path = os.path.join(tmp_dir, file_name)
         if os.path.exists(tmp_path):
             os.remove(tmp_path)

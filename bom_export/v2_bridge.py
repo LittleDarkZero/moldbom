@@ -16,6 +16,7 @@ V2 目录解析：开发 = 同级 ../V2；frozen（exe 打包）= _MEIPASS/V2 �
 import logging
 import os
 import sys
+import time
 
 log = logging.getLogger("bom_export.v2")
 
@@ -47,6 +48,8 @@ def _v2_dir():
 _ENGINE = None
 _LOAD_ERR = None
 _LOADED = False
+_FAILED_AT = None          # 上次加载失败时间戳（冷却期后自动重试）
+_RETRY_COOLDOWN = 30       # 秒
 
 
 def get_engine():
@@ -56,15 +59,17 @@ def get_engine():
                "extract_model_from_name": fn, "version": str}；
     失败返回 None（调用方回退默认值）。
     """
-    global _ENGINE, _LOAD_ERR, _LOADED
+    global _ENGINE, _LOAD_ERR, _LOADED, _FAILED_AT
     if _LOADED:
         return _ENGINE
-    _LOADED = True
+    if _FAILED_AT is not None and time.time() - _FAILED_AT < _RETRY_COOLDOWN:
+        return None
     try:
         v2 = _v2_dir()
         rules_dir = os.path.join(v2, "rules")
         if not os.path.isdir(rules_dir):
             _LOAD_ERR = f"V2 rules 目录不存在: {rules_dir}"
+            _FAILED_AT = time.time()
             return None
         if v2 not in sys.path:
             sys.path.insert(0, v2)
@@ -79,12 +84,16 @@ def get_engine():
             "extract_model_from_name": extract_model_from_name,
             "version": manifest.get("version", "?"),
         }
+        _LOADED = True
+        _FAILED_AT = None
         log.info("V2 规则引擎已加载: %d 条规则（v%s）",
                  len(active), manifest.get("version", "?"))
         return _ENGINE
     except Exception as e:  # noqa: BLE001 桥接失败必须回退，不能拖垮主流程
         _LOAD_ERR = str(e)
-        log.warning("V2 规则引擎加载失败（按默认值兜底）: %s", e)
+        _FAILED_AT = time.time()
+        log.warning("V2 规则引擎加载失败（按默认值兜底，%ds 后重试）: %s",
+                    _RETRY_COOLDOWN, e)
         return None
 
 
@@ -95,8 +104,8 @@ def reset_engine():
     注意：仅影响当前进程；多进程 worker 各自持有引擎，
     规则更新要求工具处于空闲状态（GUI running == False）。
     """
-    global _ENGINE, _LOAD_ERR, _LOADED
-    _ENGINE, _LOAD_ERR, _LOADED = None, None, False
+    global _ENGINE, _LOAD_ERR, _LOADED, _FAILED_AT
+    _ENGINE, _LOAD_ERR, _LOADED, _FAILED_AT = None, None, False, None
     log.info("V2 引擎缓存已重置，下次调用将重新加载规则")
 
 
@@ -156,8 +165,9 @@ def apply_v2_spec(results):
             gr = mat = rm = None
             gr_hit = mat_hit = rm_hit = False
             companions_by_spec = []   # [{count, companions}] 逐规格（供 add_companions 按规格算数量）
-            seen_specs = set()
-            for i, sp in enumerate(specs):
+            # 2026-08-19 性能修复：同规格实体只推理一次，输出按实体数展开
+            # （多实体标准件数量可达几百上千，原实现对每个实体重复 infer）
+            for i, (sp, cnt) in enumerate(spec_counts.items()):
                 out, prov = e.infer(name, spec_value=sp, name_spec=False)
                 if i == 0:   # 首个实体：GR/材质/备注/配套（与旧"最紧包围单值"行为最接近）
                     if "gr" in prov and out.get("gr"):
@@ -171,16 +181,14 @@ def apply_v2_spec(results):
                                    **{k: v for k, v in out.items() if k != "provenance"}}
                 # 逐规格收集配套件：多实体异规格时，每个规格的紧固件数量可能不同，
                 # 需要 (该规格实体数 × 该规格单件紧固件数) 求和（2026-08-13 修复）
-                if sp not in seen_specs:
-                    seen_specs.add(sp)
-                    comps = out.get("companions") or []
-                    if comps:
-                        companions_by_spec.append({
-                            "count": spec_counts[sp],
-                            "companions": comps,
-                        })
+                comps = out.get("companions") or []
+                if comps:
+                    companions_by_spec.append({
+                        "count": cnt,
+                        "companions": comps,
+                    })
                 ospec = out.get("outputSpec") if "outputSpec" in prov else None
-                out_specs.append(ospec or sp)
+                out_specs.extend([ospec or sp] * cnt)
             item["_companions_by_spec"] = companions_by_spec
             # ④ gr / material / remark
             if gr_hit:
@@ -197,7 +205,8 @@ def apply_v2_spec(results):
                 log.info("V2 规格级备注: %s %s → %s", name, specs[0],
                          rm.replace("\n", " / ")[:60])
             # ⑥ outputSpec：逐实体改写后重新计数合并
-            from bom_export import _format_spec_counts
+            # （2026-08-19：改从 bom_measure 引入，避免桥接层反向依赖门面 bom_export）
+            from bom_measure import _format_spec_counts
             new_spec = _format_spec_counts(out_specs)
             if new_spec != item.get("规格", ""):
                 log.info("V2 打印规格: %s %s → %s (原 %s)",

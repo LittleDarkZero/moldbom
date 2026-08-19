@@ -1,3 +1,4 @@
 # 开发 / 打包依赖
 -r requirements.txt
 pyinstaller>=6.0    # 打包 BomExport.exe（onefile / windowed）
+pytest>=7.0         # 测试运行器（README 与测试注释引用）

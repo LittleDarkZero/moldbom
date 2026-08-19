@@ -92,7 +92,7 @@ class GuiLogHandler(logging.Handler):
         self.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s',
                                               datefmt='%H:%M:%S'))
     def emit(self, record):
-        self.gui.after(0, self.gui._log, self.format(record))
+        self.gui._log_async(self.format(record))
 
 
 class BomGUI(tk.Tk):
@@ -402,10 +402,15 @@ class BomGUI(tk.Tk):
 
     # ========== 日志 ==========
     def _log(self, msg):
+        """直接写日志区（仅主线程调用）。"""
         self.log_text.configure(state="normal")
         self.log_text.insert("end", msg + "\n")
         self.log_text.see("end")
         self.log_text.configure(state="disabled")
+
+    def _log_async(self, msg):
+        """后台线程安全版：通过 after 回到主线程再写日志。"""
+        self.after(0, self._log, msg)
 
     def _draw_dot(self, state):
         colors = {"idle": C["text3"], "running": C["accent"], "done": C["accent2"], "err": C["err"]}
@@ -438,6 +443,10 @@ class BomGUI(tk.Tk):
         self._spinner_job = self.after(120, self._start_spinner)
 
     def _set_status(self, state, txt):
+        """状态更新统一回主线程执行（后台线程也会调用）。"""
+        self.after(0, self._set_status_impl, state, txt)
+
+    def _set_status_impl(self, state, txt):
         if state != "running":
             if hasattr(self, '_spinner_job'):
                 self.after_cancel(self._spinner_job)
@@ -474,9 +483,9 @@ class BomGUI(tk.Tk):
         try:
             try:
                 catia = win32com.client.GetActiveObject("CATIA.Application")
-                self._log("已连接 CATIA")
+                self._log_async("已连接 CATIA")
             except Exception:
-                self._log("正在启动 CATIA...")
+                self._log_async("正在启动 CATIA...")
                 catia = win32com.client.Dispatch("CATIA.Application")
                 catia.Visible = True
 
@@ -486,7 +495,7 @@ class BomGUI(tk.Tk):
                 name = os.path.basename(cp)
                 self._current_name = os.path.splitext(name)[0]  # 去掉 .CATPart 后缀
                 self.after(0, lambda n=self._current_name: self._set_status("running", self._pick_pun()))
-                self._log(f"[{idx+1}/{len(self.catparts)}] {name}")
+                self._log_async(f"[{idx+1}/{len(self.catparts)}] {name}")
 
                 temp_dir = tempfile.mkdtemp(prefix="bom_gui_")
                 try:
@@ -507,9 +516,9 @@ class BomGUI(tk.Tk):
                         out_fmt="xlsx", close_doc=True
                     )
                     results = ctx["results"]
-                    self._log(f"  → {os.path.basename(ctx['output_path'])}")
+                    self._log_async(f"  → {os.path.basename(ctx['output_path'])}")
                     if do_split:
-                        self._log(f"  → 拆分 {ctx.get('split_count', 0)} 个 CATPart")
+                        self._log_async(f"  → 拆分 {ctx.get('split_count', 0)} 个 CATPart")
 
                     for item in results:
                         item["_source"] = name
@@ -519,17 +528,17 @@ class BomGUI(tk.Tk):
                     try: shutil.rmtree(temp_dir)
                     except OSError: pass
 
-                self.progress["value"] = idx + 1
+                # 进度条更新也回主线程（Tk 非线程安全，2026-08-19 修复）
+                self.after(0, lambda v=idx + 1: self.progress.configure(value=v))
                 self._update_summary(all_bom_rows)
 
-            catia.RefreshDisplay = True
             self.current_results = all_bom_rows
             self._set_status("done", f"完成 — {len(all_bom_rows)} 行")
-            self._log("全部完成!")
+            self._log_async("全部完成!")
 
         except Exception as e:
             import traceback
-            self._log(f"错误: {e}")
+            self._log_async(f"错误: {e}")
             core.log.error("GUI 导出异常: %s", ''.join(traceback.format_exc()))
             self._set_status("err", "失败")
 
@@ -541,8 +550,10 @@ class BomGUI(tk.Tk):
             pythoncom.CoUninitialize()
             core.log.removeHandler(self._log_handler)  # 停止捕获
             self.running = False
-            self.run_btn.set_enabled(True)
-            self.clear_btn.set_enabled(True)
+            # 按钮恢复也回主线程（Tk 非线程安全，2026-08-19 修复）
+            self.after(0, lambda: (
+                self.run_btn.set_enabled(True),
+                self.clear_btn.set_enabled(True)))
 
     def _update_summary(self, rows):
         """底部摘要：总计行数 + 各来源文件行数（2026-08-11 替代 BOM 预览）。"""
