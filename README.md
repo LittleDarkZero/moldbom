@@ -132,7 +132,8 @@ spec 使用 `SPECPATH` 相对定位 V2/，clone 到任何路径均可直接构�
 ```bash
 # 环境变量（发布前设置）
 set GITHUB_TOKEN=ghp_xxxxxxxx          # PAT（需 Contents 读写权限）
-set GITHUB_REPO=LittleDarkZero/moldbom  # 仓库全名（私有仓库）
+rem GITHUB_REPO 可省略：脚本会自动从 git remote origin 推导为当前仓库
+rem set GITHUB_REPO=LittleDarkZero/moldbom
 
 cd bom_export
 

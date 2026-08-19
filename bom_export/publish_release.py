@@ -20,7 +20,7 @@
 
 环境变量：
   GITHUB_TOKEN  — GitHub PAT（需 repo 权限或 fine-grained Contents:Read&Write）
-  GITHUB_REPO   — 仓库全名 owner/repo（如 littledark/moldbom-dist）
+  GITHUB_REPO   — 仓库全名 owner/repo（如 LittleDarkZero/moldbom（缺省时自动从 git remote origin 推导））
 
 注意：此脚本不在 BomExport.spec 的 datas/hiddenimports 中，不会打包进 exe。
 """
@@ -44,6 +44,24 @@ CHUNK = 64 * 1024
 
 class ReleaseError(Exception):
     """发布流程错误（main 统一捕获并退出，避免库函数直接 sys.exit）。"""
+
+
+def _default_repo():
+    """从 git remote origin 推导 owner/repo，自动指向当前仓库。
+
+    未设置 GITHUB_REPO 环境变量时使用，避免发布到错误仓库。
+    """
+    try:
+        import subprocess
+        out = subprocess.check_output(
+            ["git", "remote", "get-url", "origin"],
+            stderr=subprocess.DEVNULL, text=True).strip()
+        m = re.match(r"(?:https?://[^/]+/|git@[^:]+:)([^/]+/[^/]+?)(?:\.git)?$", out)
+        if m:
+            return m.group(1)
+    except Exception:  # noqa: BLE001 推导失败返回空，由 main 提示设置
+        pass
+    return ""
 
 
 def _sha256_file(path):
@@ -319,12 +337,13 @@ def main():
     args = parser.parse_args()
 
     token = os.environ.get("GITHUB_TOKEN", "")
-    repo = os.environ.get("GITHUB_REPO", "")
+    # 仓库缺省从当前 git remote origin 推导（自动指向本仓库）
+    repo = os.environ.get("GITHUB_REPO", "") or _default_repo()
     if not token:
         print("错误: 请设置 GITHUB_TOKEN 环境变量")
         sys.exit(1)
     if not repo:
-        print("错误: 请设置 GITHUB_REPO 环境变量（如 owner/repo）")
+        print("错误: 无法确定仓库（请设置 GITHUB_REPO 环境变量，如 owner/repo）")
         sys.exit(1)
 
     try:
