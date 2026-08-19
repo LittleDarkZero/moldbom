@@ -277,18 +277,14 @@ def test_as_part_document_fallback():
 
     d = FakeDocWithPart()
     sentinel = object()
-    orig_cast = w.CastTo
+    orig_dispatch = w.dynamic.Dispatch
 
-    def fake_cast(doc, iface):
-        assert iface == "PartDocument"
-        return sentinel
-
-    w.CastTo = fake_cast
+    w.dynamic.Dispatch = lambda doc: sentinel  # 动态绑定包装兜底
     try:
         assert bom_common.as_part_document(d) is d          # 已有 Part 直接返回原对象
-        assert bom_common.as_part_document(FakeDocNoPart()) is sentinel  # 无 Part 转 PartDocument
+        assert bom_common.as_part_document(FakeDocNoPart()) is sentinel  # 无 Part → 动态包装
     finally:
-        w.CastTo = orig_cast
+        w.dynamic.Dispatch = orig_dispatch
 
 
 # ---------------- 输出格式 ----------------

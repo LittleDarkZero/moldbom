@@ -12,10 +12,9 @@ import tempfile
 import time
 
 import pythoncom
-import win32com.client
 
 from bom_common import log, __version__
-from bom_catia import _setup_catia_session, _restore_catia_session, cleanup_stale_cache
+from bom_catia import connect_catia, _setup_catia_session, _restore_catia_session, cleanup_stale_cache
 from bom_batch import batch_process
 from bom_pipeline import process_one_part
 
@@ -69,10 +68,7 @@ def main():
             if len(sys.argv) < 3:
                 print("用法: python bom_export.py --batch <文件夹路径>")
                 sys.exit(1)
-            try: catia = win32com.client.GetActiveObject("CATIA.Application")
-            except Exception:
-                catia = win32com.client.Dispatch("CATIA.Application")
-                catia.Visible = True
+            catia = connect_catia()  # 动态绑定，规避 gen_py 跨类型库问题
             _setup_catia_session(catia)
             try:
                 batch_process(catia, sys.argv[2])
@@ -120,13 +116,8 @@ def main():
         log.info("输入: %s", catpart_path)
         log.info("输出: %s", output_path)
 
-        try:
-            catia = win32com.client.GetActiveObject("CATIA.Application")
-            log.info("已连接到运行中的 CATIA")
-        except Exception:
-            log.info("正在启动 CATIA...")
-            catia = win32com.client.Dispatch("CATIA.Application")
-            catia.Visible = True
+        catia = connect_catia()  # 动态绑定，规避 gen_py 跨类型库问题
+        log.info("已连接 CATIA（动态绑定）")
 
         _setup_catia_session(catia)
         temp_dir = tempfile.mkdtemp(prefix="bom_export_")

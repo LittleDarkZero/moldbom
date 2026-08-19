@@ -19,18 +19,21 @@ __version__ = "9.3.0"
 
 # -------- CATIA COM 兼容助手 --------
 def as_part_document(doc):
-    """把 CATIA COM Document 安全转成 PartDocument 接口。
+    """把 CATIA COM Document 安全转成可访问 Part 的接口。
 
     规避静态绑定（gen_py）下基础 Document 没有 Part 属性的问题：
     Documents.Open() / Documents.Add() 返回的是 Document，而 Part 属性
-    只存在于 PartDocument（2026-08-19 运行时报错修复）。
+    只存在于 PartDocument。CastTo 在 Document/PartDocument 分属不同类型库
+    时会报 "does not appear in the same library"，因此回退用**动态绑定**
+    包装（late binding，属性运行时解析），任何情况都能取到 .Part
+    （2026-08-19 运行时报错修复）。
     """
     try:
         _ = doc.Part
         return doc
     except AttributeError:
-        from win32com.client import CastTo
-        return CastTo(doc, "PartDocument")
+        from win32com.client import dynamic
+        return dynamic.Dispatch(doc)
 
 
 # -------- 路径解析 --------

@@ -54,7 +54,7 @@ from bom_pipeline import (  # noqa: F401  —— Pipeline
 )
 from bom_batch import batch_process  # noqa: F401
 from bom_catia import (  # noqa: F401  —— CATIA 会话 / 缓存清理
-    _setup_catia_session, _restore_catia_session, cleanup_stale_cache,
+    connect_catia, _setup_catia_session, _restore_catia_session, cleanup_stale_cache,
 )
 from bom_cli import main  # noqa: F401
 

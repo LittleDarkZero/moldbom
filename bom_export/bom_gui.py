@@ -474,20 +474,15 @@ class BomGUI(tk.Tk):
 
     def _run(self):
         do_split = self.split_var.get()
-        import pythoncom, win32com.client, tempfile, shutil
+        import pythoncom, tempfile, shutil
 
         pythoncom.CoInitialize()
         catia = None
         all_bom_rows = []
         core.log.addHandler(self._log_handler)  # 开始捕获日志
         try:
-            try:
-                catia = win32com.client.GetActiveObject("CATIA.Application")
-                self._log_async("已连接 CATIA")
-            except Exception:
-                self._log_async("正在启动 CATIA...")
-                catia = win32com.client.Dispatch("CATIA.Application")
-                catia.Visible = True
+            catia = core.connect_catia()  # 动态绑定，规避 gen_py 跨类型库问题
+            self._log_async("已连接 CATIA（动态绑定）")
 
             core._setup_catia_session(catia)  # 关刷新 + 抑制弹窗
 

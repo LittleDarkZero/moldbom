@@ -12,6 +12,22 @@ import time
 from bom_common import log
 
 
+def connect_catia():
+    """连接/启动 CATIA，并强制转为动态绑定（late binding）。
+
+    静态绑定（gen_py）下 CATIA 的 Document 与 PartDocument 分属不同类型库，
+    CastTo 会报 "does not appear in the same library"；动态绑定所有属性在
+    运行时解析，无此问题（2026-08-19 修复）。
+    """
+    import win32com.client
+    try:
+        raw = win32com.client.GetActiveObject("CATIA.Application")
+    except Exception:
+        raw = win32com.client.Dispatch("CATIA.Application")
+        raw.Visible = True
+    return win32com.client.dynamic.Dispatch(raw)
+
+
 def _setup_catia_session(catia):
     """优化 CATIA 会话：关刷新 + 抑制文件告警弹窗（防无人值守卡死）"""
     catia.RefreshDisplay = False
