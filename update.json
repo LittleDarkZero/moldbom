@@ -1,11 +1,11 @@
 {
   "schema": 1,
   "exe": {
-    "version": "9.3.2",
-    "url": "https://github.com/LittleDarkZero/moldbom/releases/download/exe-v9.3.2/BomExport.exe",
-    "api_url": "https://api.github.com/repos/LittleDarkZero/moldbom/releases/assets/521679366",
-    "sha256": "b0e5870a9576117cb2445757b2aef41dbf334995dee7ec0dd55962f0af841d69",
-    "size": 74823323,
-    "notes": "BomExport v9.3.2：内置更新配置（无需 update_config.json）、修复 --clean-cache 误解析、检查更新三类反馈"
+    "version": "9.3.3",
+    "url": "https://github.com/LittleDarkZero/moldbom/releases/download/exe-v9.3.3/BomExport.exe",
+    "api_url": "https://api.github.com/repos/LittleDarkZero/moldbom/releases/assets/521959360",
+    "sha256": "ef2d5cda734abd4f064eba029895240fbc6a9bd3441b4d70fec01411660a3acc",
+    "size": 74824151,
+    "notes": "BomExport v9.3.3：仓库转公开（移除内置 token，无需配置即可自动更新）；新增 Gitee 国内镜像更新源（Gitee → GitHub API → GitHub raw 自动回退）；添加 MIT 开源许可证"
   }
 }
