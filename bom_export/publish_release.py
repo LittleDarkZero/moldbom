@@ -226,6 +226,62 @@ def _update_json_file(token, repo, branch, updates, remove_keys=()):
     print("update.json 已更新")
 
 
+GITEE_API_BASE = "https://gitee.com/api/v5"
+GITEE_MIRROR_REPO = "LittleDarkZero/moldbom"
+
+
+def _gitee_put_update_json(gitee_token, gitee_repo, updates, remove_keys=()):
+    """把 update.json 同步到 Gitee 镜像仓库（供国内镜像源读取）。
+
+    与 _update_json_file 相同语义：合并 updates、删除 remove_keys 中的键，
+    文件不存在则创建（Gitee 默认分支 master）。
+    """
+    import base64
+    path = "update.json"
+    url = "%s/repos/%s/contents/%s" % (GITEE_API_BASE, gitee_repo, path)
+
+    # 读取现有内容（拿 sha + 合并旧数据）
+    sha = None
+    data = {"schema": 1}
+    try:
+        get_url = url + "?access_token=" + urllib.parse.quote(gitee_token)
+        with urllib.request.urlopen(get_url, timeout=30) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        if isinstance(result, dict) and result.get("sha"):
+            sha = result["sha"]
+            content = base64.b64decode(result["content"]).decode("utf-8")
+            data = json.loads(content)
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            raise ReleaseError("读取 Gitee update.json 失败 %d: %s" % (e.code, e.read()[:200]))
+    except Exception as e:  # noqa: BLE001 镜像同步失败不应阻断主发布
+        print("警告: 读取 Gitee update.json 失败: %s" % e)
+        return
+
+    data.update(updates)
+    for k in remove_keys:
+        data.pop(k, None)
+
+    payload = {
+        "access_token": gitee_token,
+        "content": base64.b64encode(
+            json.dumps(data, ensure_ascii=False, indent=2).encode("utf-8")).decode("ascii"),
+        "message": "chore: update update.json (%s)" % ", ".join(updates.keys()),
+    }
+    if sha:
+        payload["sha"] = sha
+
+    try:
+        req = urllib.request.Request(
+            url, data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"}, method="PUT")
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            resp.read()
+        print("Gitee 镜像 update.json 已同步: %s/%s" % (gitee_repo, path))
+    except Exception as e:  # noqa: BLE001
+        print("警告: 同步 Gitee 镜像 update.json 失败（不影响 GitHub 发布）: %s" % e)
+
+
 def create_release(token, repo, tag, title, notes=""):
     """创建 GitHub Release，返回 (release_id, upload_url)。"""
     url = API_BASE + "/repos/%s/releases" % repo
@@ -283,6 +339,22 @@ def publish_exe(token, repo, exe_path, notes="", version=None):
             "notes": notes,
         }
     }, remove_keys=("rules",))
+    # 可选：同步到 Gitee 镜像（设置 GITEE_TOKEN 时生效）
+    gitee_token = os.environ.get("GITEE_TOKEN", "")
+    if gitee_token:
+        gitee_repo = os.environ.get("GITEE_REPO", "") or GITEE_MIRROR_REPO
+        _gitee_put_update_json(gitee_token, gitee_repo, {
+            "exe": {
+                "version": version,
+                "url": browser_url,
+                "api_url": api_url,
+                "sha256": sha256,
+                "size": size,
+                "notes": notes,
+            }
+        }, remove_keys=("rules",))
+    else:
+        print("提示: 未设置 GITEE_TOKEN，跳过 Gitee 镜像同步")
     print("exe 发布完成!")
 
 

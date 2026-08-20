@@ -74,7 +74,7 @@ def main():
                 result = {
                     "ok": True,
                     "repo": cfg.get("repo"),
-                    "token_embedded": bool(updater._effective_token(cfg)),
+                    "token_configured": bool(updater._effective_token(cfg)),
                     "exe": info.get("exe"),
                     "rules": info.get("rules"),
                 }

@@ -50,11 +50,11 @@ class UpdaterError(Exception):
 
 # 默认仓库：全部配置内置进 exe，不依赖、也不生成 update_config.json
 DEFAULT_REPO = "https://github.com/LittleDarkZero/moldbom"
+GITEE_MIRROR = "https://gitee.com/LittleDarkZero/moldbom/raw/master"   # 国内镜像（Gitee 公开仓库，仅 update.json）
 
 DEFAULT_CONFIG = {
     "repo": DEFAULT_REPO,    # 内置仓库（非机密；改仓库需改源码重新构建）
-    "mirror": "",            # 国内镜像源 base（如 Gitee raw 根，公开 update.json），空 = 不启用
-    "token": "",             # 私有仓库 PAT：构建脚本注入 bom_token.py 内嵌
+    "mirror": GITEE_MIRROR,     # 国内镜像 base（Gitee raw 根，公开 update.json）
     "auto_check": True,      # 启动时自动检查
     "check_interval_hours": 24,
     "last_check": "",        # 运行时状态（仅存 %APPDATA%，不写 exe 同目录）
@@ -80,7 +80,7 @@ def state_path():
 
 
 def load_config():
-    """配置全部内置（repo/token/间隔等）；仅合并 %APPDATA% 的运行时状态。
+    """配置全部内置（repo/镜像/间隔等（公开仓库无需 token））；仅合并 %APPDATA% 的运行时状态。
 
     不再读取/生成 update_config.json：exe 单独一份即可完成自动更新。
     """
@@ -180,23 +180,16 @@ _CHUNK = 64 * 1024  # 64KB
 
 
 def _effective_token(cfg):
-    """取生效 token：cfg['token'] 优先，否则用构建期内嵌 token。
+    """取生效 token：仅读用户显式配置；公开仓库默认无需 token。
 
-    内嵌 token 随 exe 打包（bom_token.EMBEDDED_TOKEN，构建脚本注入），
-    不再需要任何外部配置文件。
+    exe 不再内置 token（仓库已公开）；保留此函数以兼容未来需要
+    认证的私有镜像/自建更新源场景。
     """
-    token = cfg.get("token", "")
-    if token:
-        return token
-    try:
-        from bom_token import EMBEDDED_TOKEN
-        return EMBEDDED_TOKEN or ""
-    except Exception:  # noqa: BLE001 内嵌 token 缺失时按无 token 处理
-        return ""
+    return cfg.get("token", "") or ""
 
 
 def _resolve_download_url(info, cfg):
-    """私有仓库用 API asset 地址下载（browser 地址带 token 也会 404）。
+    """下载地址解析：公开仓库用浏览器地址；显式配置了 token 时用 API asset 地址。
 
     公开仓库（无 token）继续用浏览器地址；有 token 且 manifest 提供
     api_url 时优先走 api.github.com 的资产端点。
@@ -207,7 +200,7 @@ def _resolve_download_url(info, cfg):
 
 
 def _build_headers(cfg, extra=None):
-    """构造请求头（token 优先用户配置，其次内嵌）。"""
+    """构造请求头（仅当显式配置 token 时加 Authorization，公开仓库无需）。"""
     headers = {"User-Agent": "BomExport-Updater/1.0"}
     token = _effective_token(cfg)
     if token:
@@ -248,7 +241,7 @@ def _manifest_urls(cfg):
 
     镜像源（cfg["mirror"]，如 Gitee raw 根 https://gitee.com/x/y/raw/main）为
     国内加速首选，可为空；api.github.com 比 raw.githubusercontent.com 在国内更稳定，
-    私有仓库凭内嵌 token 直读 contents API。
+    公开仓库直接读 contents API（无需 token）。
     """
     repo = cfg.get("repo", "")
     if not repo:

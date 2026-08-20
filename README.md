@@ -116,30 +116,25 @@ pyinstaller --clean --noconfirm BomExport.spec
 
 spec 使用 `SPECPATH` 相对定位 V2/，clone 到任何路径均可直接构建。
 
-### 内嵌自动更新 token（私有仓库分发）
+### 自动更新（公开仓库 + Gitee 镜像，无需 token）
 
-`scripts/build_exe.ps1` 在打包前把 token 写入 `bom_export/bom_token.py`
-（`EMBEDDED_TOKEN`），PyInstaller 打包完成后自动恢复为空文件，防止误提交：
+仓库已公开，`BomExport.exe` **不再内置任何 token**；更新检查与下载
+对任何用户开箱即用。
+
+`scripts/build_exe.ps1` 直接打包：
 
 ```powershell
-# 不带 token（公开仓库 / 用户自填 token）
 .\scripts\build_exe.ps1
-
-# 带内嵌 token（私有仓库，自动更新开箱即用）
-.\scripts\build_exe.ps1 -Token ghp_xxxxxxxx
-# 或
-$env:MOLDBOM_TOKEN = "ghp_xxxxxxxx"; .\scripts\build_exe.ps1
 ```
 
-构建后 `dist/` 只含 `BomExport.exe`，**不再生成/复制 `update_config.json`**：
-repo、token、自动检查间隔等全部内置在 exe 内；唯一可能生成的是
-`%APPDATA%\MoldBOM\update_state.json`（只存 last_check/auto_check 运行时状态，
-不含 repo/token，也不随 exe 分发）。
+构建后 `dist/` 只含 `BomExport.exe`，**不生成/复制 `update_config.json`**：
+repo（GitHub 公开仓库）、Gitee 镜像、自动检查间隔等全部内置在 exe 内；
+唯一可能生成的是 `%APPDATA%\MoldBOM\update_state.json`（只存
+last_check / auto_check 运行时状态，不含 repo/token，也不随 exe 分发）。
 
-> ⚠️ 安全警告：内嵌 token 会以明文存在 exe 中，**任何拿到 exe 的人都可以
-> 用 strings/反编译提取**。只用于小范围可信分发；务必使用**最小权限**的
-> fine-grained token（仅本仓库、Contents: Read、无过期时间或足够长的有效期），
-> 不要把有写权限/全局权限的 token 内嵌。
+更新源顺序（逐源自动回退）：
+Gitee 镜像 `https://gitee.com/LittleDarkZero/moldbom/raw/master/update.json`
+→ GitHub Contents API → GitHub raw。
 
 ## 版本号规范
 
@@ -176,7 +171,7 @@ python publish_release.py rules --notes "新增 gr 域 3 条规则"
 
 1. 无需任何配置文件：把 `BomExport.exe` 单独分发即可（repo、token、
    自动检查等全部内置在 exe 内；`%APPDATA%\MoldBOM\update_state.json`
-   仅保存 last_check / auto_check 运行时状态，不含 repo/token）
+   仅保存 last_check / auto_check 运行时状态，不含 repo/镜像/token）
 2. GUI 右上角「检查更新」，或启动时自动检查（可在左栏关闭）
 3. 检查结果必有明确反馈：
    - **已是最新版本**：状态栏 + 弹窗提示
@@ -214,4 +209,4 @@ bom_export 代码中硬编码（算法阈值与结构常量除外）。
 - `bom_export/TEST/` — 真实 CATIA 测试集与规格测量基准（50 例点云）
 - `bom_export/参考bom表/` — 历史 BOM（V2 规则录入参考）
 - `V2/rules_backup_*/` — 旧格式规则备份（回滚请用 snapshots 机制）
-- `%APPDATA%\MoldBOM\update_state.json` — 运行时状态（last_check / auto_check），位于用户目录，不含 repo/token，不入库
+- `%APPDATA%\MoldBOM\update_state.json` — 运行时状态（last_check / auto_check），位于用户目录，不含 repo/镜像/token，不入库

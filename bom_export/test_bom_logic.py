@@ -287,39 +287,34 @@ def test_as_part_document_fallback():
         w.dynamic.Dispatch = orig_dispatch
 
 
-# ---------------- 自动更新 token ----------------
+# ---------------- 自动更新 token（公开仓库：默认无需 token） ----------------
 def test_updater_effective_token():
-    """token 优先级：用户配置 > 构建期内嵌（2026-08-19 新增）。"""
+    """_effective_token 只读用户显式配置；公开仓库默认空（2026-08-21 更新）。"""
     import updater
-    import bom_token
 
     assert updater._effective_token({"token": "cfg-token"}) == "cfg-token"
-    old = bom_token.EMBEDDED_TOKEN
-    bom_token.EMBEDDED_TOKEN = "embedded-token"
-    try:
-        assert updater._effective_token({"token": ""}) == "embedded-token"
-        assert updater._effective_token({}) == "embedded-token"
-    finally:
-        bom_token.EMBEDDED_TOKEN = old
     assert updater._effective_token({"token": ""}) == ""
+    assert updater._effective_token({}) == ""
 
 
 def test_load_config_embedded_defaults():
-    """配置全部内置：无任何配置文件也能拿到 repo/token/auto_check（2026-08-20）。"""
+    """配置全部内置：无任何配置文件也能拿到 repo/Gitee 镜像/auto_check（2026-08-20）。"""
     import json
     import tempfile
     import updater
 
     assert updater.DEFAULT_REPO == "https://github.com/LittleDarkZero/moldbom"
+    assert updater.GITEE_MIRROR.startswith("https://gitee.com/")
     orig = updater.state_path
     try:
         d = tempfile.mkdtemp()
         updater.state_path = lambda: os.path.join(d, "state.json")
         cfg = updater.load_config()
         assert cfg["repo"] == updater.DEFAULT_REPO
-        assert cfg["token"] == ""
+        assert cfg["mirror"] == updater.GITEE_MIRROR
+        assert cfg.get("token", "") == ""          # 公开仓库：无内置 token
         assert cfg["auto_check"] is True
-        # 状态文件只影响 last_check/auto_check，绝不覆盖内置 repo/token
+        # 状态文件只影响 last_check/auto_check，绝不覆盖内置 repo/mirror/token
         with open(os.path.join(d, "state.json"), "w", encoding="utf-8") as f:
             json.dump({"repo": "https://evil.example/x", "token": "should-not-merge",
                        "auto_check": False, "last_check": "2026-08-20T00:00:00+00:00"}, f)
@@ -327,7 +322,8 @@ def test_load_config_embedded_defaults():
         assert cfg["auto_check"] is False
         assert cfg["last_check"] == "2026-08-20T00:00:00+00:00"
         assert cfg["repo"] == updater.DEFAULT_REPO
-        assert cfg["token"] == ""
+        assert cfg["mirror"] == updater.GITEE_MIRROR
+        assert cfg.get("token", "") == ""
     finally:
         updater.state_path = orig
 
@@ -357,25 +353,18 @@ def test_save_config_state_only():
         updater.state_path = orig
 
 def test_resolve_download_url():
-    """私有仓库优先 API asset 地址；无 token 用浏览器地址（2026-08-20 新增）。"""
+    """显式配置 token 时优先 API asset 地址；公开仓库无 token 用浏览器地址（2026-08-21）。"""
     import updater
-    import bom_token
 
     info = {"url": "https://github.com/x/y/releases/download/v1/a.exe",
             "api_url": "https://api.github.com/repos/x/y/releases/assets/123"}
-    # 有 token → api_url
+    # 显式 token → api_url
     assert updater._resolve_download_url(info, {"token": "t"}) == info["api_url"]
-    # 无 token → 浏览器 url
+    # 无 token（公开仓库默认）→ 浏览器 url
     assert updater._resolve_download_url(info, {"token": ""}) == info["url"]
+    assert updater._resolve_download_url(info, {}) == info["url"]
     # 无 api_url 字段 → url
     assert updater._resolve_download_url({"url": info["url"]}, {"token": "t"}) == info["url"]
-    # 内嵌 token 同样走 api_url
-    old = bom_token.EMBEDDED_TOKEN
-    bom_token.EMBEDDED_TOKEN = "embedded"
-    try:
-        assert updater._resolve_download_url(info, {"token": ""}) == info["api_url"]
-    finally:
-        bom_token.EMBEDDED_TOKEN = old
 
 def test_manifest_urls_order():
     """update.json 候选源顺序：镜像 → api.github.com → raw（2026-08-20）。"""
