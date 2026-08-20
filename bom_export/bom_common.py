@@ -14,7 +14,7 @@ import tempfile
 import traceback
 
 # 版本号唯一真源（updater.py 与 bom_cli.py 读取此常量做版本比对）
-__version__ = "9.3.1"
+__version__ = "9.3.2"
 
 
 # -------- CATIA COM 兼容助手 --------

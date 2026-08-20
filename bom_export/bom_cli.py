@@ -61,6 +61,7 @@ def main():
             n = cleanup_stale_cache(force=True)
             log.info("--clean-cache: 清理 %d 个缓存目录", n)
             print("已清理 %d 个遗留缓存目录" % n)
+            return
 
         # 2026-08-20: 检查更新命令（写 JSON 结果到文件，便于窗口化 exe 验证）
         if sys.argv[1] == "--check-update":
@@ -90,7 +91,6 @@ def main():
                     _json.dump(result, f, ensure_ascii=False, indent=2)
             except OSError as e:
                 log.warning("写检查结果失败: %s", e)
-            return
             return
 
         # 处理 --batch 模式
