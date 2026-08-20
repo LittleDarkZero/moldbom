@@ -28,7 +28,8 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    # 排除纯开发/测试依赖：pytest 经 scipy._lib._testutils 被误引入，pygments 随之打包（非运行所需，膨胀 ~5MB）
+    excludes=['pytest', 'pygments'],
     noarchive=False,
     optimize=0,
 )
