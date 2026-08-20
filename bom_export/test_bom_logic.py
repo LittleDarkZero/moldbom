@@ -304,6 +304,29 @@ def test_updater_effective_token():
     assert updater._effective_token({"token": ""}) == ""
 
 
+# ---------------- 下载地址解析 ----------------
+def test_resolve_download_url():
+    """私有仓库优先 API asset 地址；无 token 用浏览器地址（2026-08-20 新增）。"""
+    import updater
+    import bom_token
+
+    info = {"url": "https://github.com/x/y/releases/download/v1/a.exe",
+            "api_url": "https://api.github.com/repos/x/y/releases/assets/123"}
+    # 有 token → api_url
+    assert updater._resolve_download_url(info, {"token": "t"}) == info["api_url"]
+    # 无 token → 浏览器 url
+    assert updater._resolve_download_url(info, {"token": ""}) == info["url"]
+    # 无 api_url 字段 → url
+    assert updater._resolve_download_url({"url": info["url"]}, {"token": "t"}) == info["url"]
+    # 内嵌 token 同样走 api_url
+    old = bom_token.EMBEDDED_TOKEN
+    bom_token.EMBEDDED_TOKEN = "embedded"
+    try:
+        assert updater._resolve_download_url(info, {"token": ""}) == info["api_url"]
+    finally:
+        bom_token.EMBEDDED_TOKEN = old
+
+
 # ---------------- 输出格式 ----------------
 def test_write_csv(tmp_path=None):
     import tempfile

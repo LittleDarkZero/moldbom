@@ -6,8 +6,10 @@
 #   $env:MOLDBOM_TOKEN = "ghp_xxxx"; .\scripts\build_exe.ps1
 #
 # Security: the token is written into bom_export\bom_token.py only during
-# the build and restored to empty afterwards (finally block). Never commit
-# a real token to the repository.
+# the build (compiled INTO BomExport.exe by PyInstaller), then the original
+# file is restored byte-for-byte. The shipped update_config.json keeps
+# token empty - the embedded token lives inside the exe, not in a second
+# file. Never commit a real token.
 param(
     [string]$Token = $env:MOLDBOM_TOKEN
 )
@@ -21,15 +23,21 @@ if (-not (Test-Path $py)) {
 
 $root = Split-Path -Parent $PSScriptRoot
 $tokenFile = Join-Path $root "bom_export\bom_token.py"
-$original = Get-Content $tokenFile -Raw -Encoding UTF8
+# byte-level backup (encoding-agnostic, immune to PS 5.1 codepage issues)
+$originalBytes = [System.IO.File]::ReadAllBytes($tokenFile)
 
 try {
     if ($Token) {
-        # 注入 token（转义单引号）
+        # inject token (escape single quotes)
         $escaped = $Token.Replace("'", "''")
         $content = "# -*- coding: utf-8 -*-`nEMBEDDED_TOKEN = '$escaped'`n"
-        [System.IO.File]::WriteAllText($tokenFile, $content, (New-Object System.Text.UTF8Encoding($false)))
-        Write-Host "==> Embedded token injected (len=$($Token.Length))"
+        [System.IO.File]::WriteAllBytes($tokenFile, [System.Text.Encoding]::UTF8.GetBytes($content))
+        # verify injection BEFORE PyInstaller compiles it
+        $check = [System.IO.File]::ReadAllText($tokenFile, [System.Text.Encoding]::UTF8)
+        if (-not $check.Contains($Token)) {
+            throw "token injection verification FAILED: token not found in bom_token.py"
+        }
+        Write-Host "==> Embedded token injected and verified (len=$($Token.Length))"
     } else {
         Write-Host "==> No token provided; building WITHOUT embedded token"
     }
@@ -44,7 +52,19 @@ try {
         Pop-Location
     }
 } finally {
-    # 恢复为空模板，防止真实 token 残留/误提交
-    [System.IO.File]::WriteAllText($tokenFile, $original, (New-Object System.Text.UTF8Encoding($false)))
-    Write-Host "==> bom_token.py restored"
+    # byte-level restore of the original bom_token.py
+    [System.IO.File]::WriteAllBytes($tokenFile, $originalBytes)
+    $cur = [System.IO.File]::ReadAllBytes($tokenFile)
+    if ($cur.Length -ne $originalBytes.Length) {
+        throw "restore verification FAILED: length mismatch"
+    }
+    for ($i = 0; $i -lt $originalBytes.Length; $i++) {
+        if ($cur[$i] -ne $originalBytes[$i]) {
+            throw "restore verification FAILED: byte mismatch at $i"
+        }
+    }
+    if ($Token -and ([System.Text.Encoding]::UTF8.GetString($cur)).Contains($Token)) {
+        throw "restore verification FAILED: token still present after restore"
+    }
+    Write-Host "==> bom_token.py restored (byte-identical)"
 }

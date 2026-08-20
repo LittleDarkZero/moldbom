@@ -165,7 +165,7 @@ def _upload_asset(upload_url, asset_path, token, asset_name=None, max_retries=3)
             result = json.loads(raw) if raw else {}
             browser_url = result.get("browser_download_url", "")
             print("  上传完成: %s" % browser_url)
-            return browser_url
+            return result
         except (OSError, http.client.HTTPException, json.JSONDecodeError) as e:
             last_err = str(e)
             if attempt < max_retries - 1:
@@ -268,13 +268,16 @@ def publish_exe(token, repo, exe_path, notes="", version=None):
 
     rel_id, upload_url = create_release(token, repo, tag,
                                          "BomExport v%s" % version, notes)
-    browser_url = _upload_asset(upload_url, exe_path, token, "BomExport.exe")
+    up_result = _upload_asset(upload_url, exe_path, token, "BomExport.exe")
+    browser_url = up_result.get("browser_download_url", "")
+    api_url = up_result.get("url", "")
 
     branch = _get_repo_info(token, repo)
     _update_json_file(token, repo, branch, {
         "exe": {
             "version": version,
             "url": browser_url,
+            "api_url": api_url,
             "sha256": sha256,
             "size": size,
             "notes": notes,
@@ -308,7 +311,8 @@ def publish_rules(token, repo, rules_dir, notes="", version=None):
 
     rel_id, upload_url = create_release(token, repo, tag,
                                          "Rules v%s" % version, notes)
-    browser_url = _upload_asset(upload_url, zip_path, token, "rules.zip")
+    up_result = _upload_asset(upload_url, zip_path, token, "rules.zip")
+    browser_url = up_result.get("browser_download_url", "")
 
     branch = _get_repo_info(token, repo)
     _update_json_file(token, repo, branch, {

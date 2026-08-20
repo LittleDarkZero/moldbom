@@ -172,6 +172,17 @@ def _effective_token(cfg):
         return ""
 
 
+def _resolve_download_url(info, cfg):
+    """私有仓库用 API asset 地址下载（browser 地址带 token 也会 404）。
+
+    公开仓库（无 token）继续用浏览器地址；有 token 且 manifest 提供
+    api_url 时优先走 api.github.com 的资产端点。
+    """
+    if info and _effective_token(cfg) and info.get("api_url"):
+        return info["api_url"]
+    return (info or {}).get("url", "")
+
+
 def _build_headers(cfg, extra=None):
     """构造请求头（token 优先用户配置，其次内嵌）。"""
     headers = {"User-Agent": "BomExport-Updater/1.0"}
@@ -266,6 +277,8 @@ def download_file(url, dest, cfg, sha256=None, expected_size=None,
     headers = {}
     if existing > 0:
         headers["Range"] = "bytes=%d-" % existing
+    if url.startswith("https://api.github.com/"):
+        headers["Accept"] = "application/octet-stream"
 
     resp = _http_get(url, cfg, headers=headers)
     total = int(resp.headers.get("Content-Length", 0))
@@ -426,7 +439,7 @@ def download_and_install_rules(rules_info, cfg, progress_cb=None):
 
     流程：下载 zip → 校验 → 解压暂存 → load_ruleset 预验证 → 原子换名 → reset_engine
     """
-    url = rules_info["url"]
+    url = _resolve_download_url(rules_info, cfg)
     sha256 = rules_info.get("sha256", "")
     expected_size = rules_info.get("size")
     new_version = rules_info["version"]
@@ -528,7 +541,7 @@ def download_and_install_rules(rules_info, cfg, progress_cb=None):
 
 def download_exe_update(exe_info, cfg, progress_cb=None):
     """下载 exe 更新到 updates/BomExport.exe.new，返回路径。"""
-    url = exe_info["url"]
+    url = _resolve_download_url(exe_info, cfg)
     sha256 = exe_info.get("sha256", "")
     expected_size = exe_info.get("size")
 
