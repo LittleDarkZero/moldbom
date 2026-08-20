@@ -53,6 +53,7 @@ DEFAULT_REPO = "https://github.com/LittleDarkZero/moldbom"
 
 DEFAULT_CONFIG = {
     "repo": DEFAULT_REPO,    # 内置仓库（非机密；改仓库需改源码重新构建）
+    "mirror": "",            # 国内镜像源 base（如 Gitee raw 根，公开 update.json），空 = 不启用
     "token": "",             # 私有仓库 PAT：构建脚本注入 bom_token.py 内嵌
     "auto_check": True,      # 启动时自动检查
     "check_interval_hours": 24,
@@ -242,36 +243,54 @@ def _http_get(url, cfg, headers=None, timeout=None):
                        user_message="网络连接失败，请检查网络后重试")
 
 
-def _raw_url(cfg, path):
-    """拼 GitHub raw URL：repo/raw/main/path?t=timestamp。"""
+def _manifest_urls(cfg):
+    """返回按顺序尝试的 update.json 候选地址（镜像 → api.github.com → raw）。
+
+    镜像源（cfg["mirror"]，如 Gitee raw 根 https://gitee.com/x/y/raw/main）为
+    国内加速首选，可为空；api.github.com 比 raw.githubusercontent.com 在国内更稳定，
+    私有仓库凭内嵌 token 直读 contents API。
+    """
     repo = cfg.get("repo", "")
     if not repo:
         raise UpdaterError("未配置 GitHub 仓库地址",
                            user_message="更新源未内置，请联系开发者重新打包程序")
-    # 去掉 https://github.com/ 前缀，拼 raw
-    # https://github.com/OWNER/REPO → https://raw.githubusercontent.com/OWNER/REPO/main
+    mirror = (cfg.get("mirror") or "").rstrip("/")
+    urls = []
+    if mirror:
+        urls.append(mirror + "/update.json")
     m = re.match(r"https?://github\.com/([^/]+/[^/]+)", repo)
     if m:
         owner_repo = m.group(1)
-        base = "https://raw.githubusercontent.com/" + owner_repo + "/main/" + path
+        urls.append("https://api.github.com/repos/%s/contents/update.json?ref=main" % owner_repo)
+        urls.append("https://raw.githubusercontent.com/%s/main/update.json?t=%d"
+                    % (owner_repo, int(time.time())))
     else:
-        base = repo.rstrip("/") + "/raw/main/" + path
-    return base + "?t=" + str(int(time.time()))
+        urls.append(repo.rstrip("/") + "/raw/main/update.json?t=" + str(int(time.time())))
+    return urls
 
 
 def fetch_manifest(cfg):
-    """获取远程 update.json，返回 dict。"""
-    url = _raw_url(cfg, "update.json")
-    resp = _http_get(url, cfg)
-    try:
-        data = json.loads(resp.read().decode("utf-8"))
-        resp.close()
-    except (json.JSONDecodeError, UnicodeDecodeError) as e:
-        raise UpdaterError("update.json 解析失败: %s" % e,
-                           user_message="更新清单格式错误，请检查远程文件")
-    if not isinstance(data, dict):
-        raise UpdaterError("update.json 格式异常")
-    return data
+    """获取远程 update.json（多源逐级回退），返回 dict。"""
+    urls = _manifest_urls(cfg)
+    last_err = None
+    for url in urls:
+        try:
+            headers = None
+            if url.startswith("https://api.github.com/"):
+                headers = {"Accept": "application/vnd.github.raw+json"}
+            resp = _http_get(url, cfg, headers=headers)
+            try:
+                data = json.loads(resp.read().decode("utf-8"))
+            finally:
+                resp.close()
+            if not isinstance(data, dict):
+                raise UpdaterError("update.json 格式异常")
+            log.info("检查更新清单: %s", url.split("?")[0])
+            return data
+        except UpdaterError as e:
+            last_err = e
+            log.warning("更新清单源不可用 (%s): %s", url, e)
+    raise last_err
 
 
 def download_file(url, dest, cfg, sha256=None, expected_size=None,

@@ -377,6 +377,77 @@ def test_resolve_download_url():
     finally:
         bom_token.EMBEDDED_TOKEN = old
 
+def test_manifest_urls_order():
+    """update.json 候选源顺序：镜像 → api.github.com → raw（2026-08-20）。"""
+    import updater
+
+    cfg = {"repo": updater.DEFAULT_REPO, "mirror": ""}
+    urls = updater._manifest_urls(cfg)
+    assert urls[0].startswith("https://api.github.com/repos/LittleDarkZero/moldbom/contents/update.json")
+    assert urls[1].startswith("https://raw.githubusercontent.com/LittleDarkZero/moldbom/main/update.json")
+    assert len(urls) == 2
+
+    cfg["mirror"] = "https://gitee.com/x/y/raw/main"
+    urls = updater._manifest_urls(cfg)
+    assert urls[0] == "https://gitee.com/x/y/raw/main/update.json"
+    assert urls[1].startswith("https://api.github.com/")
+    assert urls[2].startswith("https://raw.githubusercontent.com/")
+
+    try:
+        updater._manifest_urls({"repo": "", "mirror": ""})
+        assert False, "应抛出 UpdaterError"
+    except updater.UpdaterError:
+        pass
+
+
+def test_fetch_manifest_fallback():
+    """fetch_manifest 多源回退：api 失败 → raw 成功；镜像命中后不再请求 GitHub（2026-08-20）。"""
+    import updater
+
+    class _FakeResp:
+        def __init__(self, content):
+            self._content = content
+
+        def read(self):
+            return self._content
+
+        def close(self):
+            pass
+
+    calls = []
+
+    def fake_get(url, cfg, headers=None):
+        calls.append(url)
+        if url.startswith("https://api.github.com/"):
+            raise updater.UpdaterError("api down")
+        return _FakeResp(b'{"exe": {"version": "9.3.2"}}')
+
+    orig = updater._http_get
+    updater._http_get = fake_get
+    try:
+        data = updater.fetch_manifest({"repo": updater.DEFAULT_REPO, "mirror": ""})
+        assert data["exe"]["version"] == "9.3.2"
+        assert calls[0].startswith("https://api.github.com/")
+        assert calls[1].startswith("https://raw.githubusercontent.com/")
+    finally:
+        updater._http_get = orig
+
+    calls.clear()
+
+    def fake_get2(url, cfg, headers=None):
+        calls.append(url)
+        return _FakeResp(b'{"exe": {"version": "9.3.3"}}')
+
+    updater._http_get = fake_get2
+    try:
+        data = updater.fetch_manifest({"repo": updater.DEFAULT_REPO,
+                                       "mirror": "https://gitee.com/x/y/raw/main"})
+        assert data["exe"]["version"] == "9.3.3"
+        assert calls == ["https://gitee.com/x/y/raw/main/update.json"]
+    finally:
+        updater._http_get = orig
+
+
 
 # ---------------- 输出格式 ----------------
 def test_write_csv(tmp_path=None):
