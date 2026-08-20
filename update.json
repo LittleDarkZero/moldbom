@@ -3,8 +3,9 @@
   "exe": {
     "version": "9.3.0",
     "url": "https://github.com/LittleDarkZero/moldbom/releases/download/exe-v9.3.0/BomExport.exe",
-    "sha256": "4d7a4ed54a101966d3e798c3ba4b059419ae7083110e66d05c0c495e03629675",
-    "size": 74820488,
+    "api_url": "https://api.github.com/repos/LittleDarkZero/moldbom/releases/assets/521615260",
+    "sha256": "b3920349415e74ed698418ad42ecf347ffd631094f1393438d9df12605882f84",
+    "size": 74820035,
     "notes": "v9.3.0：CATIA 动态绑定、批量文档泄漏修复、配套件结构化字段、P1-P8 闭环"
   }
 }
