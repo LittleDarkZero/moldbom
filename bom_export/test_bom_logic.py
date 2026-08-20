@@ -305,6 +305,7 @@ def test_load_config_embedded_defaults():
 
     assert updater.DEFAULT_REPO == "https://github.com/LittleDarkZero/moldbom"
     assert updater.GITEE_MIRROR.startswith("https://gitee.com/")
+    assert updater.GITEE_MIRROR.endswith("/raw/main")
     orig = updater.state_path
     try:
         d = tempfile.mkdtemp()

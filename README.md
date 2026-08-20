@@ -4,7 +4,13 @@ CATIA CATPart → 模具明细表 BOM 自动导出工具。读取 CATPart 中各
 按 V2 规则引擎推理 GR / 材质 / 热处理 / 加工备注，几何测量规格，自动补全  
 配套紧固件并分配零件号，输出对齐模板的 Excel；支持按 GR 拆分 CATPart 与打包。
 
-支持 **GitHub 自动更新**：程序（exe）全量更新 + V2 规则热更新（免重启）。
+支持 **GitHub + Gitee 镜像自动更新**：程序（exe）全量更新 + V2 规则热更新（免重启）。
+
+## 开源许可
+
+本项目采用 **MIT License**（见根目录 [LICENSE](LICENSE)）。
+Copyright (c) 2026 LittleDarkZero —— 可自由使用、修改、分发（含商用），
+仅需保留版权声明与许可文本；软件按“现状”提供，不附带任何担保。
 
 ## 目录结构
 
@@ -133,7 +139,7 @@ repo（GitHub 公开仓库）、Gitee 镜像、自动检查间隔等全部内置
 last_check / auto_check 运行时状态，不含 repo/token，也不随 exe 分发）。
 
 更新源顺序（逐源自动回退）：
-Gitee 镜像 `https://gitee.com/LittleDarkZero/moldbom/raw/master/update.json`
+Gitee 镜像 `https://gitee.com/LittleDarkZero/moldbom/raw/main/update.json`
 → GitHub Contents API → GitHub raw。
 
 ## 版本号规范

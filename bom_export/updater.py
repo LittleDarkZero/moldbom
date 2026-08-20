@@ -50,7 +50,7 @@ class UpdaterError(Exception):
 
 # 默认仓库：全部配置内置进 exe，不依赖、也不生成 update_config.json
 DEFAULT_REPO = "https://github.com/LittleDarkZero/moldbom"
-GITEE_MIRROR = "https://gitee.com/LittleDarkZero/moldbom/raw/master"   # 国内镜像（Gitee 公开仓库，仅 update.json）
+GITEE_MIRROR = "https://gitee.com/LittleDarkZero/moldbom/raw/main"   # 国内镜像（Gitee 公开仓库，仅 update.json）
 
 DEFAULT_CONFIG = {
     "repo": DEFAULT_REPO,    # 内置仓库（非机密；改仓库需改源码重新构建）
