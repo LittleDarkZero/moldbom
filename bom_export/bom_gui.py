@@ -255,8 +255,14 @@ class BomGUI(tk.Tk):
         except Exception:
             pass
 
+    @staticmethod
+    def _updater_error_msg(e):
+        """从异常提取用户可读信息（优先 updater.UpdaterError.user_message）。"""
+        msg = getattr(e, "user_message", None)
+        return msg or str(e) or "未知错误"
+
     def _auto_check_thread(self):
-        """后台自动检查线程（静默，有更新时仅改状态文字）。"""
+        """后台自动检查线程（启动时静默：状态栏+日志反馈，失败不弹窗打扰）。"""
         try:
             import updater
             cfg = updater.load_config()
@@ -272,11 +278,14 @@ class BomGUI(tk.Tk):
                 msg = "有新版本: " + " / ".join(parts)
                 self.after(0, lambda: self.status_txt.configure(text=msg, fg=C["warn"]))
                 self._pending_update_info = info
+                self._log_async("自动检查更新：发现新版本\n" + updater.format_update_info(info))
             else:
                 self.after(0, lambda: self.status_txt.configure(text="已是最新", fg=C["text3"]))
-        except Exception:
-            # 静默失败，不打扰用户
-            pass
+                self._log_async("自动检查更新：当前已是最新版本")
+        except Exception as e:
+            err_msg = self._updater_error_msg(e)
+            self.after(0, lambda: self.status_txt.configure(text="检查更新失败", fg=C["err"]))
+            self._log_async("自动检查更新失败：" + err_msg)
 
     def _check_updates(self):
         """手动检查更新（按钮点击）。"""
@@ -288,11 +297,12 @@ class BomGUI(tk.Tk):
         threading.Thread(target=self._manual_check_thread, daemon=True).start()
 
     def _manual_check_thread(self):
-        """手动检查线程（有结果时弹对话框）。"""
+        """手动检查线程（状态栏 + 弹窗 + 日志，三类结果均有明确反馈）。"""
         try:
             import updater
             cfg = updater.load_config()
             if not cfg.get("repo"):
+                self._log_async("检查更新：未配置 GitHub 仓库地址")
                 self.after(0, lambda: (
                     self.status_txt.configure(text="未配置更新源", fg=C["err"]),
                     messagebox.showinfo("提示",
@@ -305,20 +315,25 @@ class BomGUI(tk.Tk):
             exe = info.get("exe")
             rules = info.get("rules")
             if not exe and not rules:
+                self._log_async("检查更新：当前已是最新版本")
                 self.after(0, lambda: (
                     self.status_txt.configure(text="已是最新版本", fg=C["text3"]),
                     messagebox.showinfo("检查更新", "当前已是最新版本", parent=self)))
                 return
-            # 弹出更新对话框
-            self.after(0, lambda: self._show_update_dialog(info))
+            # 有新版本：状态栏 + 日志 + 更新对话框
+            parts = []
+            if exe:
+                parts.append("程序 v%s" % exe["version"])
+            if rules:
+                parts.append("规则 v%s" % rules["version"])
+            detail = updater.format_update_info(info)
+            self._log_async("检查更新：发现新版本\n" + detail)
+            self.after(0, lambda: (
+                self.status_txt.configure(text="有新版本: " + " / ".join(parts), fg=C["warn"]),
+                self._show_update_dialog(info)))
         except Exception as e:
-            err_msg = str(e)
-            try:
-                import updater
-                if hasattr(e, 'user_message'):
-                    err_msg = e.user_message
-            except Exception:
-                pass
+            err_msg = self._updater_error_msg(e)
+            self._log_async("检查更新失败：" + err_msg)
             self.after(0, lambda: (
                 self.status_txt.configure(text="检查失败", fg=C["err"]),
                 messagebox.showerror("检查更新失败", err_msg, parent=self)))
