@@ -1,11 +1,11 @@
 {
   "schema": 1,
   "exe": {
-    "version": "9.3.0",
-    "url": "https://github.com/LittleDarkZero/moldbom/releases/download/exe-v9.3.0/BomExport.exe",
-    "api_url": "https://api.github.com/repos/LittleDarkZero/moldbom/releases/assets/521633388",
-    "sha256": "2ec6fdb861c0b2fdff99198237275ef00bbbdc305ae9584665043bb59f140ac9",
-    "size": 74821770,
-    "notes": "v9.3.0：CATIA 动态绑定、批量文档泄漏修复、配套件结构化字段、P1-P8 闭环、检查更新三类结果明确反馈"
+    "version": "9.3.1",
+    "url": "https://github.com/LittleDarkZero/moldbom/releases/download/exe-v9.3.1/BomExport.exe",
+    "api_url": "https://api.github.com/repos/LittleDarkZero/moldbom/releases/assets/521640148",
+    "sha256": "ba3acddce2e4af840af6bf1492ff2286aa4b51731c7d0f2d66925a4a060f9d63",
+    "size": 74821542,
+    "notes": "v9.3.1：检查更新给出三类明确反馈（已是最新/失败原因/新版本详情）"
   }
 }
