@@ -48,6 +48,9 @@ class UpdaterError(Exception):
 # 配置
 # ============================================================
 
+# 默认仓库：Release 仅分发 exe（无 update_config.json）时也能直接检查更新
+DEFAULT_REPO = "https://github.com/LittleDarkZero/moldbom"
+
 DEFAULT_CONFIG = {
     "repo": "",              # GitHub 仓库 URL，如 https://github.com/OWNER/REPO
     "token": "",             # 私有仓库 PAT（公开仓库留空）
@@ -70,7 +73,7 @@ def config_path():
 
 
 def load_config():
-    """读取配置；缺失/损坏 → DEFAULT_CONFIG 兜底。"""
+    """读取配置；缺失/损坏 → DEFAULT_CONFIG 兜底；repo 为空 → 内置默认仓库。"""
     cfg = dict(DEFAULT_CONFIG)
     try:
         with open(config_path(), "r", encoding="utf-8") as f:
@@ -82,6 +85,9 @@ def load_config():
     # 确保 repo 非空时规范化（去尾部 /）
     if cfg.get("repo"):
         cfg["repo"] = cfg["repo"].rstrip("/")
+    # 无配置文件 / repo 为空 → 回退内置仓库（Release 只发 exe 也能检查更新）
+    if not cfg.get("repo"):
+        cfg["repo"] = DEFAULT_REPO
     return cfg
 
 

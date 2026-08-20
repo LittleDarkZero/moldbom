@@ -304,6 +304,33 @@ def test_updater_effective_token():
     assert updater._effective_token({"token": ""}) == ""
 
 
+def test_load_config_default_repo():
+    """无 update_config.json / repo 为空时回退内置默认仓库（2026-08-20 新增）。"""
+    import json
+    import tempfile
+    import updater
+
+    assert updater.DEFAULT_REPO == "https://github.com/LittleDarkZero/moldbom"
+    orig = updater.config_path
+    try:
+        # 1) 配置文件不存在
+        d = tempfile.mkdtemp()
+        updater.config_path = lambda: os.path.join(d, "missing.json")
+        cfg = updater.load_config()
+        assert cfg["repo"] == updater.DEFAULT_REPO
+        # 2) 配置文件存在但 repo 为空
+        p = os.path.join(d, "update_config.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"repo": "", "auto_check": False}, f)
+        updater.config_path = lambda: p
+        cfg = updater.load_config()
+        assert cfg["repo"] == updater.DEFAULT_REPO
+        assert cfg["auto_check"] is False  # 用户配置仍生效
+    finally:
+        updater.config_path = orig
+
+
+
 # ---------------- 下载地址解析 ----------------
 def test_resolve_download_url():
     """私有仓库优先 API asset 地址；无 token 用浏览器地址（2026-08-20 新增）。"""
