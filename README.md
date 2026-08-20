@@ -185,7 +185,8 @@ python publish_release.py rules --notes "新增 gr 域 3 条规则"
    （启动时自动检查只写状态栏与日志，不弹窗打扰）
 4. 网络加速：检查更新按「国内镜像（如 Gitee，可选内置）→ api.github.com → raw.githubusercontent.com」
    顺序尝试、自动回退；exe 下载走 api.github.com asset 地址（私有仓库浏览器直链会 404）
-5. 规则更新即时生效（免重启）；程序更新下载完成后自动重启替换
+5. （可选）若所在网络连 GitHub 仍慢/失败：以管理员运行 `scripts\setup_github_hosts.bat` 一键写入 hosts 加速（可 `undo` 撤销；仅对 DNS 污染有效，GitHub IP 变化时需更新脚本内 IP）
+6. 规则更新即时生效（免重启）；程序更新下载完成后自动重启替换
 
 安全设计：sha256 + size 双校验、断点续传、替换失败自动回滚、  
 规则损坏自动回退 exe 内置副本——任何失败都不会导致工具不可用。
