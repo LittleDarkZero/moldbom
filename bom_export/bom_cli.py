@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """BomExport 命令行入口模块（2026-08-18 重构自 bom_export.py 的 main()）。
 
-解析命令行参数（单文件 / --batch / --clean-cache / --split / --format），
+解析命令行参数（单文件 / --batch / --clean-cache / --check-update / --split / --format），
 无参数时启动 GUI。
 """
 
@@ -61,6 +61,36 @@ def main():
             n = cleanup_stale_cache(force=True)
             log.info("--clean-cache: 清理 %d 个缓存目录", n)
             print("已清理 %d 个遗留缓存目录" % n)
+
+        # 2026-08-20: 检查更新命令（写 JSON 结果到文件，便于窗口化 exe 验证）
+        if sys.argv[1] == "--check-update":
+            import json as _json
+            import updater
+            out_file = sys.argv[2] if len(sys.argv) > 2 else "update_check_result.json"
+            cfg = updater.load_config()
+            try:
+                info = updater.check_for_updates(cfg)
+                result = {
+                    "ok": True,
+                    "repo": cfg.get("repo"),
+                    "token_embedded": bool(updater._effective_token(cfg)),
+                    "exe": info.get("exe"),
+                    "rules": info.get("rules"),
+                }
+                print("检查更新成功: " + ("有新版本" if (info.get("exe") or info.get("rules")) else "已是最新"))
+            except Exception as e:
+                result = {
+                    "ok": False,
+                    "error": str(e),
+                    "user_message": getattr(e, "user_message", None),
+                }
+                print("检查更新失败: %s" % (getattr(e, "user_message", None) or e))
+            try:
+                with open(out_file, "w", encoding="utf-8") as f:
+                    _json.dump(result, f, ensure_ascii=False, indent=2)
+            except OSError as e:
+                log.warning("写检查结果失败: %s", e)
+            return
             return
 
         # 处理 --batch 模式

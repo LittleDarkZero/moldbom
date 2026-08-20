@@ -302,13 +302,12 @@ class BomGUI(tk.Tk):
             import updater
             cfg = updater.load_config()
             if not cfg.get("repo"):
-                self._log_async("检查更新：未配置 GitHub 仓库地址")
+                self._log_async("检查更新：未内置 GitHub 仓库地址")
                 self.after(0, lambda: (
                     self.status_txt.configure(text="未配置更新源", fg=C["err"]),
                     messagebox.showinfo("提示",
-                        "尚未配置 GitHub 仓库地址。\n\n"
-                        "请在 exe 同目录的 update_config.json 中设置:\n"
-                        '  "repo": "https://github.com/OWNER/REPO"',
+                        "未内置 GitHub 仓库地址。\n\n"
+                        "请联系开发者重新打包程序。",
                         parent=self)))
                 return
             info = updater.check_for_updates(cfg)

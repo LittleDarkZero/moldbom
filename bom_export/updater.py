@@ -48,15 +48,15 @@ class UpdaterError(Exception):
 # 配置
 # ============================================================
 
-# 默认仓库：Release 仅分发 exe（无 update_config.json）时也能直接检查更新
+# 默认仓库：全部配置内置进 exe，不依赖、也不生成 update_config.json
 DEFAULT_REPO = "https://github.com/LittleDarkZero/moldbom"
 
 DEFAULT_CONFIG = {
-    "repo": "",              # GitHub 仓库 URL，如 https://github.com/OWNER/REPO
-    "token": "",             # 私有仓库 PAT（公开仓库留空）
+    "repo": DEFAULT_REPO,    # 内置仓库（非机密；改仓库需改源码重新构建）
+    "token": "",             # 私有仓库 PAT：构建脚本注入 bom_token.py 内嵌
     "auto_check": True,      # 启动时自动检查
     "check_interval_hours": 24,
-    "last_check": "",        # ISO 时间戳
+    "last_check": "",        # 运行时状态（仅存 %APPDATA%，不写 exe 同目录）
     "exe_channel": "stable", # 预留：stable / beta
 }
 
@@ -68,36 +68,52 @@ def _exe_dir():
     return os.path.dirname(os.path.abspath(__file__))
 
 
-def config_path():
-    return os.path.join(_exe_dir(), "update_config.json")
+def state_path():
+    """运行时状态文件：%APPDATA%/MoldBOM/update_state.json。
+
+    只存 last_check / auto_check 这类运行时状态，绝不含 repo/token，
+    也不放在 exe 同目录——用户只需分发一个 BomExport.exe。
+    """
+    base = os.environ.get("APPDATA") or os.path.expanduser("~")
+    return os.path.join(base, "MoldBOM", "update_state.json")
 
 
 def load_config():
-    """读取配置；缺失/损坏 → DEFAULT_CONFIG 兜底；repo 为空 → 内置默认仓库。"""
+    """配置全部内置（repo/token/间隔等）；仅合并 %APPDATA% 的运行时状态。
+
+    不再读取/生成 update_config.json：exe 单独一份即可完成自动更新。
+    """
     cfg = dict(DEFAULT_CONFIG)
-    try:
-        with open(config_path(), "r", encoding="utf-8") as f:
-            data = json.load(f)
-        if isinstance(data, dict):
-            cfg.update(data)
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        pass
-    # 确保 repo 非空时规范化（去尾部 /）
-    if cfg.get("repo"):
-        cfg["repo"] = cfg["repo"].rstrip("/")
-    # 无配置文件 / repo 为空 → 回退内置仓库（Release 只发 exe 也能检查更新）
-    if not cfg.get("repo"):
-        cfg["repo"] = DEFAULT_REPO
+    cfg.update(_load_state())
     return cfg
 
 
-def save_config(cfg):
-    """写入配置；try/except 包裹永不抛异常。"""
+def _load_state():
+    """读取运行时状态（last_check / auto_check）；缺失或损坏 → {}。"""
     try:
-        with open(config_path(), "w", encoding="utf-8") as f:
-            json.dump(cfg, f, ensure_ascii=False, indent=2)
+        with open(state_path(), "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            return {}
+        return {k: data[k] for k in ("last_check", "auto_check") if k in data}
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_config(cfg):
+    """持久化运行时状态（仅 last_check / auto_check）到 %APPDATA%。
+
+    绝不写 repo/token，也绝不生成 exe 同目录的 update_config.json。
+    """
+    state = {k: cfg[k] for k in ("last_check", "auto_check") if k in cfg}
+    try:
+        p = state_path()
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
     except OSError as e:
-        log.warning("保存更新配置失败: %s", e)
+        log.warning("保存更新状态失败: %s", e)
+
 
 
 # ============================================================
@@ -163,10 +179,10 @@ _CHUNK = 64 * 1024  # 64KB
 
 
 def _effective_token(cfg):
-    """取生效 token：用户侧 update_config.json 优先，否则用构建期内嵌 token。
+    """取生效 token：cfg['token'] 优先，否则用构建期内嵌 token。
 
     内嵌 token 随 exe 打包（bom_token.EMBEDDED_TOKEN，构建脚本注入），
-    用户即使删掉 update_config.json 里的 token，自动更新仍可用。
+    不再需要任何外部配置文件。
     """
     token = cfg.get("token", "")
     if token:
@@ -231,7 +247,7 @@ def _raw_url(cfg, path):
     repo = cfg.get("repo", "")
     if not repo:
         raise UpdaterError("未配置 GitHub 仓库地址",
-                           user_message="请在 update_config.json 中配置 repo 地址")
+                           user_message="更新源未内置，请联系开发者重新打包程序")
     # 去掉 https://github.com/ 前缀，拼 raw
     # https://github.com/OWNER/REPO → https://raw.githubusercontent.com/OWNER/REPO/main
     m = re.match(r"https?://github\.com/([^/]+/[^/]+)", repo)

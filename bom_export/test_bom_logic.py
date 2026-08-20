@@ -304,34 +304,58 @@ def test_updater_effective_token():
     assert updater._effective_token({"token": ""}) == ""
 
 
-def test_load_config_default_repo():
-    """无 update_config.json / repo 为空时回退内置默认仓库（2026-08-20 新增）。"""
+def test_load_config_embedded_defaults():
+    """配置全部内置：无任何配置文件也能拿到 repo/token/auto_check（2026-08-20）。"""
     import json
     import tempfile
     import updater
 
     assert updater.DEFAULT_REPO == "https://github.com/LittleDarkZero/moldbom"
-    orig = updater.config_path
+    orig = updater.state_path
     try:
-        # 1) 配置文件不存在
         d = tempfile.mkdtemp()
-        updater.config_path = lambda: os.path.join(d, "missing.json")
+        updater.state_path = lambda: os.path.join(d, "state.json")
         cfg = updater.load_config()
         assert cfg["repo"] == updater.DEFAULT_REPO
-        # 2) 配置文件存在但 repo 为空
-        p = os.path.join(d, "update_config.json")
-        with open(p, "w", encoding="utf-8") as f:
-            json.dump({"repo": "", "auto_check": False}, f)
-        updater.config_path = lambda: p
+        assert cfg["token"] == ""
+        assert cfg["auto_check"] is True
+        # 状态文件只影响 last_check/auto_check，绝不覆盖内置 repo/token
+        with open(os.path.join(d, "state.json"), "w", encoding="utf-8") as f:
+            json.dump({"repo": "https://evil.example/x", "token": "should-not-merge",
+                       "auto_check": False, "last_check": "2026-08-20T00:00:00+00:00"}, f)
         cfg = updater.load_config()
+        assert cfg["auto_check"] is False
+        assert cfg["last_check"] == "2026-08-20T00:00:00+00:00"
         assert cfg["repo"] == updater.DEFAULT_REPO
-        assert cfg["auto_check"] is False  # 用户配置仍生效
+        assert cfg["token"] == ""
     finally:
-        updater.config_path = orig
+        updater.state_path = orig
 
 
+def test_save_config_state_only():
+    """save_config 只写运行时状态，绝不写 repo/token（2026-08-20）。"""
+    import json
+    import tempfile
+    import updater
 
-# ---------------- 下载地址解析 ----------------
+    orig = updater.state_path
+    try:
+        d = tempfile.mkdtemp()
+        p = os.path.join(d, "state.json")
+        updater.state_path = lambda: p
+        updater.save_config({
+            "repo": updater.DEFAULT_REPO,
+            "token": "super-secret",
+            "auto_check": False,
+            "last_check": "2026-08-20T00:00:00+00:00",
+        })
+        with open(p, "r", encoding="utf-8") as f:
+            state = json.load(f)
+        assert set(state) == {"auto_check", "last_check"}
+        assert "token" not in state and "repo" not in state
+    finally:
+        updater.state_path = orig
+
 def test_resolve_download_url():
     """私有仓库优先 API asset 地址；无 token 用浏览器地址（2026-08-20 新增）。"""
     import updater

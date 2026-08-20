@@ -7,9 +7,8 @@
 #
 # Security: the token is written into bom_export\bom_token.py only during
 # the build (compiled INTO BomExport.exe by PyInstaller), then the original
-# file is restored byte-for-byte. The shipped update_config.json keeps
-# token empty - the embedded token lives inside the exe, not in a second
-# file. Never commit a real token.
+# file is restored byte-for-byte. No update_config.json is shipped - all
+# auto-update settings (repo/token) live inside the exe.
 param(
     [string]$Token = $env:MOLDBOM_TOKEN
 )
@@ -46,7 +45,8 @@ try {
     try {
         & $py -m PyInstaller --clean --noconfirm BomExport.spec
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-        Copy-Item update_config.example.json dist\update_config.json -Force
+        # no update_config.json is shipped: purge any stale one from dist
+        Remove-Item dist\update_config.json -Force -ErrorAction SilentlyContinue
         Write-Host "==> Built: $((Get-Item dist\BomExport.exe).FullName)"
     } finally {
         Pop-Location

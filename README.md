@@ -35,8 +35,7 @@ moldbom/
 │   ├── BomExport.spec       # PyInstaller 配置（仓库相对路径，任何机器可构建）
 │   ├── test_bom_logic.py    # 单元测试（内存引擎注入，无需 CATIA）
 │   ├── test_stp_features.py # STP 特征测试
-│   ├── verify_user_confirmed.py  # 点云基准验证（需专有数据，见下）
-│   └── update_config.example.json  # 自动更新配置模板
+│   └── verify_user_confirmed.py  # 点云基准验证（需专有数据，见下）
 ├── V2/                      # V2 规则系统（唯一规则源）
 │   ├── rulespec/            # 规则引擎包（10 域模型 / 门禁 / 快照）
 │   ├── rules/               # 规则数据（*.rules.json + manifest.json + snapshots/）
@@ -132,8 +131,10 @@ spec 使用 `SPECPATH` 相对定位 V2/，clone 到任何路径均可直接构�
 $env:MOLDBOM_TOKEN = "ghp_xxxxxxxx"; .\scripts\build_exe.ps1
 ```
 
-脚本同样会复制 `dist/update_config.json`（repo 指向当前仓库，token 留空——
-运行时优先读用户 `update_config.json` 的 token，没有才用内嵌 token）。
+构建后 `dist/` 只含 `BomExport.exe`，**不再生成/复制 `update_config.json`**：
+repo、token、自动检查间隔等全部内置在 exe 内；唯一可能生成的是
+`%APPDATA%\MoldBOM\update_state.json`（只存 last_check/auto_check 运行时状态，
+不含 repo/token，也不随 exe 分发）。
 
 > ⚠️ 安全警告：内嵌 token 会以明文存在 exe 中，**任何拿到 exe 的人都可以
 > 用 strings/反编译提取**。只用于小范围可信分发；务必使用**最小权限**的
@@ -173,9 +174,9 @@ python publish_release.py rules --notes "新增 gr 域 3 条规则"
 
 ## 自动更新机制（最终用户）
 
-1. 复制 `bom_export/update_config.example.json` 为 exe 同目录的  
-   `update_config.json`，填入 `repo` 地址（私有仓库可填 `token`；
-   若分发时已内嵌 token 则无需填写）
+1. 无需任何配置文件：把 `BomExport.exe` 单独分发即可（repo、token、
+   自动检查等全部内置在 exe 内；`%APPDATA%\MoldBOM\update_state.json`
+   仅保存 last_check / auto_check 运行时状态，不含 repo/token）
 2. GUI 右上角「检查更新」，或启动时自动检查（可在左栏关闭）
 3. 检查结果必有明确反馈：
    - **已是最新版本**：状态栏 + 弹窗提示
@@ -210,4 +211,4 @@ bom_export 代码中硬编码（算法阈值与结构常量除外）。
 - `bom_export/TEST/` — 真实 CATIA 测试集与规格测量基准（50 例点云）
 - `bom_export/参考bom表/` — 历史 BOM（V2 规则录入参考）
 - `V2/rules_backup_*/` — 旧格式规则备份（回滚请用 snapshots 机制）
-- `bom_export/update_config.json` — 可能含 token，绝不入库
+- `%APPDATA%\MoldBOM\update_state.json` — 运行时状态（last_check / auto_check），位于用户目录，不含 repo/token，不入库
