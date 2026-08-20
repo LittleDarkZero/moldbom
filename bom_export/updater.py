@@ -156,10 +156,26 @@ _MAX_RETRIES = 3
 _CHUNK = 64 * 1024  # 64KB
 
 
-def _build_headers(cfg, extra=None):
-    """构造请求头。"""
-    headers = {"User-Agent": "BomExport-Updater/1.0"}
+def _effective_token(cfg):
+    """取生效 token：用户侧 update_config.json 优先，否则用构建期内嵌 token。
+
+    内嵌 token 随 exe 打包（bom_token.EMBEDDED_TOKEN，构建脚本注入），
+    用户即使删掉 update_config.json 里的 token，自动更新仍可用。
+    """
     token = cfg.get("token", "")
+    if token:
+        return token
+    try:
+        from bom_token import EMBEDDED_TOKEN
+        return EMBEDDED_TOKEN or ""
+    except Exception:  # noqa: BLE001 内嵌 token 缺失时按无 token 处理
+        return ""
+
+
+def _build_headers(cfg, extra=None):
+    """构造请求头（token 优先用户配置，其次内嵌）。"""
+    headers = {"User-Agent": "BomExport-Updater/1.0"}
+    token = _effective_token(cfg)
     if token:
         headers["Authorization"] = "Bearer " + token
     if extra:

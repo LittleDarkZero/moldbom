@@ -190,8 +190,8 @@ def _get_file_sha(token, repo, branch, path):
         return None  # 文件不存在（404）时视为新建
 
 
-def _update_json_file(token, repo, branch, updates):
-    """更新仓库根目录 update.json。"""
+def _update_json_file(token, repo, branch, updates, remove_keys=()):
+    """更新仓库根目录 update.json；remove_keys 中的键会被删除（如废弃的 rules）。"""
     path = "update.json"
     sha = _get_file_sha(token, repo, branch, path)
 
@@ -207,6 +207,8 @@ def _update_json_file(token, repo, branch, updates):
 
     # 合并更新
     data.update(updates)
+    for k in remove_keys:
+        data.pop(k, None)
 
     # 写回
     import base64
@@ -277,7 +279,7 @@ def publish_exe(token, repo, exe_path, notes="", version=None):
             "size": size,
             "notes": notes,
         }
-    })
+    }, remove_keys=("rules",))
     print("exe 发布完成!")
 
 

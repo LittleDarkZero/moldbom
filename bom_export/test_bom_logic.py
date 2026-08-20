@@ -287,6 +287,23 @@ def test_as_part_document_fallback():
         w.dynamic.Dispatch = orig_dispatch
 
 
+# ---------------- 自动更新 token ----------------
+def test_updater_effective_token():
+    """token 优先级：用户配置 > 构建期内嵌（2026-08-19 新增）。"""
+    import updater
+    import bom_token
+
+    assert updater._effective_token({"token": "cfg-token"}) == "cfg-token"
+    old = bom_token.EMBEDDED_TOKEN
+    bom_token.EMBEDDED_TOKEN = "embedded-token"
+    try:
+        assert updater._effective_token({"token": ""}) == "embedded-token"
+        assert updater._effective_token({}) == "embedded-token"
+    finally:
+        bom_token.EMBEDDED_TOKEN = old
+    assert updater._effective_token({"token": ""}) == ""
+
+
 # ---------------- 输出格式 ----------------
 def test_write_csv(tmp_path=None):
     import tempfile

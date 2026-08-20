@@ -117,6 +117,29 @@ pyinstaller --clean --noconfirm BomExport.spec
 
 spec 使用 `SPECPATH` 相对定位 V2/，clone 到任何路径均可直接构建。
 
+### 内嵌自动更新 token（私有仓库分发）
+
+`scripts/build_exe.ps1` 在打包前把 token 写入 `bom_export/bom_token.py`
+（`EMBEDDED_TOKEN`），PyInstaller 打包完成后自动恢复为空文件，防止误提交：
+
+```powershell
+# 不带 token（公开仓库 / 用户自填 token）
+.\scripts\build_exe.ps1
+
+# 带内嵌 token（私有仓库，自动更新开箱即用）
+.\scripts\build_exe.ps1 -Token ghp_xxxxxxxx
+# 或
+$env:MOLDBOM_TOKEN = "ghp_xxxxxxxx"; .\scripts\build_exe.ps1
+```
+
+脚本同样会复制 `dist/update_config.json`（repo 指向当前仓库，token 留空——
+运行时优先读用户 `update_config.json` 的 token，没有才用内嵌 token）。
+
+> ⚠️ 安全警告：内嵌 token 会以明文存在 exe 中，**任何拿到 exe 的人都可以
+> 用 strings/反编译提取**。只用于小范围可信分发；务必使用**最小权限**的
+> fine-grained token（仅本仓库、Contents: Read、无过期时间或足够长的有效期），
+> 不要把有写权限/全局权限的 token 内嵌。
+
 ## 版本号规范
 
 | 对象 | 位置 | 说明 |
@@ -127,7 +150,8 @@ spec 使用 `SPECPATH` 相对定位 V2/，clone 到任何路径均可直接构�
 ## 发布更新（维护者）
 
 自动更新依赖 GitHub Releases 分发，仓库根目录维护 `update.json` 清单  
-（由发布脚本自动创建/更新，勿手动编辑）。
+（由发布脚本自动创建/更新，勿手动编辑）。当前清单仅含 exe 条目，
+规则已随 exe 内置，不再单独发布规则更新。
 
 ```bash
 # 环境变量（发布前设置）
@@ -140,17 +164,18 @@ cd bom_export
 # 发布程序更新（自动读取 __version__，默认取 dist/BomExport.exe）
 python publish_release.py exe --notes "修复规格测量问题"
 
-# 发布规则更新（自动读取 manifest.json，默认取 ../V2/rules）
+# 发布规则更新（可选：规则已内置 exe，默认不再单独发布）
 python publish_release.py rules --notes "新增 gr 域 3 条规则"
 ```
 
-脚本自动完成：算 sha256 → 创建 Release（tag: `exe-v9.3.0` / `rules-v2.0.41`）→  
+脚本自动完成：算 sha256 → 创建 Release（tag: `exe-v9.3.0`）→  
 上传 asset → 更新仓库根 `update.json`。
 
 ## 自动更新机制（最终用户）
 
 1. 复制 `bom_export/update_config.example.json` 为 exe 同目录的  
-   `update_config.json`，填入 `repo` 地址（私有仓库再填 `token`）
+   `update_config.json`，填入 `repo` 地址（私有仓库可填 `token`；
+   若分发时已内嵌 token 则无需填写）
 2. GUI 右上角「检查更新」，或启动时自动检查（可在左栏关闭）
 3. 规则更新即时生效（免重启）；程序更新下载完成后自动重启替换
 

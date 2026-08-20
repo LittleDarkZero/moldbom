@@ -23,6 +23,7 @@ a = Analysis(
         'bom_common', 'bom_utils', 'bom_infer', 'bom_stp', 'bom_measure',
         'bom_parser', 'bom_numbering', 'bom_companions', 'bom_writer',
         'bom_split', 'bom_pipeline', 'bom_batch', 'bom_catia', 'bom_cli',
+        'bom_token',
     ],
     hookspath=[],
     hooksconfig={},
